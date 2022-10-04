@@ -1,0 +1,8 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Proper language detection
+*.Rmd linguist-detectable
+*.qmd linguist-detectable
+*.js linguist-vendored
+*.css linguist-vendored
