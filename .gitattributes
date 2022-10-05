@@ -1,6 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+docs/* linguist-documentation=false
+
 # Proper language detection
 *.Rmd linguist-detectable
 *.qmd linguist-detectable
