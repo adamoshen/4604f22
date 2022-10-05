@@ -1,11 +1,11 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-docs/* linguist-documentation=false
+docs/* -linguist-documentation
 
 # Proper language detection
 *.Rmd linguist-detectable
-*.qmd linguist-detectable
+*.qmd linguist-detectable linguist-language=RMarkdown
 *.js linguist-vendored
 *.css linguist-vendored
 *.html linguist-vendored
