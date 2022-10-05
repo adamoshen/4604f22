@@ -10,7 +10,8 @@ format:
     progress: true
     touch: true
     keyboard: true
-    controls: false
+    controls: true
+    controls-layout: edges
     help: true
     highlight-style: "../adam_one_light.theme"
     from: markdown-smart
