@@ -20,4 +20,4 @@ MTC Hours: Wednesdays 2pm to 4pm
 
 ***
 
-[Lab 1, October 4](./Lab-1/)
+[Lab 1, October 5](./Lab-1/)
