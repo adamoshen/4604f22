@@ -233,7 +233,7 @@ qpareto <- function(p, shape, scale=3) {
     stop("Value of `shape` must be greater than 1.")
   }
   
-  if (any(p < 0 | p > 1)) {
+  if (any(p <= 0 | p > 1)) {
     stop("Values of `p` must be between 0 and 1.")
   }
 }
@@ -241,7 +241,7 @@ qpareto <- function(p, shape, scale=3) {
 
 ::: {.psmaller}
 
-Here, we need to use `any` because the condition `p < 0 | p > 1` returns a vector greater than
+Here, we need to use `any` because the condition `p <= 0 | p > 1` returns a vector greater than
 length 1. If we supply a logical condition with length greater than 1 to `if`, it will only use the
 first element.
 

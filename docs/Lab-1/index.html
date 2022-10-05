@@ -605,13 +605,13 @@
 <span id="cb17-7" class="hljs-ln-code"><a href="#cb17-7"></a>    <span class="fu">stop</span>(<span class="st">"Value of `shape` must be greater than 1."</span>)</span>
 <span id="cb17-8" class="hljs-ln-code"><a href="#cb17-8"></a>  }</span>
 <span id="cb17-9" class="hljs-ln-code"><a href="#cb17-9"></a>  </span>
-<span id="cb17-10" class="hljs-ln-code"><a href="#cb17-10"></a>  <span class="cf">if</span> (<span class="fu">any</span>(p <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">|</span> p <span class="sc">&gt;</span> <span class="dv">1</span>)) {</span>
+<span id="cb17-10" class="hljs-ln-code"><a href="#cb17-10"></a>  <span class="cf">if</span> (<span class="fu">any</span>(p <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">|</span> p <span class="sc">&gt;</span> <span class="dv">1</span>)) {</span>
 <span id="cb17-11" class="hljs-ln-code"><a href="#cb17-11"></a>    <span class="fu">stop</span>(<span class="st">"Values of `p` must be between 0 and 1."</span>)</span>
 <span id="cb17-12" class="hljs-ln-code"><a href="#cb17-12"></a>  }</span>
 <span id="cb17-13" class="hljs-ln-code"><a href="#cb17-13"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="psmaller">
-<p>Here, we need to use <code>any</code> because the condition <code>p &lt; 0 | p &gt; 1</code> returns a vector greater than length 1. If we supply a logical condition with length greater than 1 to <code>if</code>, it will only use the first element.</p>
+<p>Here, we need to use <code>any</code> because the condition <code>p &lt;= 0 | p &gt; 1</code> returns a vector greater than length 1. If we supply a logical condition with length greater than 1 to <code>if</code>, it will only use the first element.</p>
 <p><code>any</code> evaluates to <code>TRUE</code> if the condition inside contains at least one <code>TRUE</code>. Otherwise, it returns <code>FALSE</code>.</p>
 </div>
 </section>
