@@ -8,6 +8,8 @@ format:
     scrollable: true
     overview: true
     progress: true
+    touch: true
+    keyboard: true
     controls: false
     help: true
     highlight-style: "../adam_one_light.theme"
