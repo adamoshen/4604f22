@@ -7,9 +7,11 @@ format:
     theme: [dark, "../slides.scss"]
     overview: true
     progress: true
+    history: false
     touch: true
     keyboard: true
     controls: true
+    controls-back-arrows: visible
     controls-layout: edges
     help: true
     highlight-style: "../adam_one_light.theme"
