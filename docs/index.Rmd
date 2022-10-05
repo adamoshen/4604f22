@@ -1,0 +1,23 @@
+---
+title: "Stat 4604"
+output:
+  html_document:
+    css: base.css
+    theme:
+      version: 5
+      bootswatch: cyborg
+      base_font:
+        google: "Fira Sans"
+    includes:
+      in_header: header.html
+---
+
+## Statistical Computing, Fall 2022
+
+***
+
+MTC Hours: Wednesdays 2pm to 4pm
+
+***
+
+[Lab 1, October 4](./Lab-1/)
