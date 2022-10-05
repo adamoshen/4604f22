@@ -2,7 +2,7 @@
 title: "Stat 4604"
 output:
   html_document:
-    css: base.css
+    css: landing.css
     theme:
       version: 5
       bootswatch: cyborg
