@@ -1,0 +1,451 @@
+---
+title: "Stat 4604: Lab 1"
+date: "October 4, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../custom.scss"]
+    scrollable: true
+    overview: true
+    progress: true
+    mouse-wheel: true
+    controls: false
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Contact
+
+Name: Adam Shen
+
+Email: firstnamelastname@cmail.carleton.ca
+
+MTC Hours: Wednesdays 2pm to 4pm
+
+## Resources for learning R
+
+If you do not feel very comfortable with the R language, I recommend working through
+[Hands on Programming with R](https://rstudio-education.github.io/hopr/), a free online book
+written by the folks over at RStudio.
+
+- Chapters 2 through 7 for R basics, such as writing functions, R objects, subsetting
+
+- Chapter 9 for conditional logic
+
+- Chapter 11 for loops
+
+## Distribution of the day
+
+Today, we will be working with a Pareto distribution, whose pdf is given by:
+
+$$f(x) = \frac{\alpha 3^{\alpha}}{x^{\alpha + 1}}, \quad x > 3, \quad \alpha > 1,$$
+
+and zero otherwise.
+
+Task: Find the cdf and the quantile function.
+
+[Solution (pdf)](./Lab-1-Notes.pdf)
+
+## Write a function for the pdf {auto-animate=true}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+dpareto <- function(x, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+}
+```
+
+## Write a function for the pdf {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+dpareto <- function(x, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+}
+```
+
+## Write a function for the pdf {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+dpareto <- function(x, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+  
+  ifelse(x <= scale, 0, (shape * scale^(shape)) / (x^(shape + 1)))
+}
+```
+
+Here, I use the `ifelse` function because I want `dpareto` to be vectorized over `x`, i.e. if the
+`shape` criteria has been satisfied, I can supply a vector of values for `x` and the function should
+return a vector of the same length.
+
+You **do not** need a loop for this!
+
+## Test `dpareto`
+
+```{r, error=TRUE}
+dpareto(x=4, shape=0.5)
+```
+
+. . .
+
+```{r}
+dpareto(x=seq(2.5, 3.5, 0.1), shape=3)
+```
+
+## Write a function for the cdf {auto-animate=true}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+ppareto <- function(q, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+}
+```
+
+## Write a function for the cdf {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+ppareto <- function(q, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+}
+```
+
+## Write a function for the cdf {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+ppareto <- function(q, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+  
+  ifelse(q <= scale, 0, 1 - (scale / q)^shape)
+}
+```
+
+## Test `ppareto`
+
+```{r, error=TRUE}
+ppareto(q=4, shape=0.5)
+```
+
+. . .
+
+```{r}
+ppareto(q=seq(2.5, 3.5, 0.1), shape=3)
+```
+
+## Write a function for the quantile function {auto-animate=true}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+qpareto <- function(p, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+}
+```
+
+## Write a function for the quantile function {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+qpareto <- function(p, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+}
+```
+
+## Write a function for the quantile function {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+qpareto <- function(p, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+  
+  if (any(p < 0 | p > 1)) {
+    stop("Values of `p` must be between 0 and 1.")
+  }
+}
+```
+
+::: {.psmaller}
+
+Here, we need to use `any` because the condition `p < 0 | p > 1` returns a vector greater than
+length 1. If we supply a logical condition with length greater than 1 to `if`, it will only use the
+first element.
+
+`any` evaluates to `TRUE` if the condition inside contains at least one `TRUE`. Otherwise, it
+returns `FALSE`.
+
+:::
+
+## Write a function for the quantile function {auto-animate=true, visibility=uncounted}
+
+Note: `shape` refers to $\alpha$.
+
+```{r}
+qpareto <- function(p, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+  
+  if (any(p <= 0 | p > 1)) {
+    stop("Values of `p` must be in the interval (0, 1].")
+  }
+  
+  scale / (1 - p)^(1 / shape)
+}
+```
+
+## Test `qpareto`
+
+```{r, error=TRUE}
+qpareto(p=0.5, shape=0.5)
+```
+
+. . .
+
+```{r, error=TRUE}
+qpareto(p=-3, shape=3)
+```
+
+. . .
+
+```{r}
+qpareto(p=c(0.25, 0.5, 0.75), shape=3)
+```
+
+. . .
+
+```{r}
+ppareto(q=6, shape=3)
+```
+
+. . .
+
+```{r}
+ppareto(q=6, shape=3) |>
+  qpareto(shape=3)
+```
+
+## Inverse-transform method (outline)
+
+We would like to sample from the given Pareto distribution using the inverse-transform method.
+
+### Outline of steps:
+
+1. Generate random deviates from Uniform(0,1).
+
+2. Pass random deviates to quantile function. Done!
+
+## Inverse-transform method (with symbols)
+
+Let $X_{1}, X_{2}, \ldots, X_{n}$ be an iid sample from the Pareto distribution (with scale
+parameter equal to 3). To generate this sample with the inverse-transform method:
+
+1. For $i=1, \ldots, n$, generate $U_{i}$ where $U_{i} \sim \text{Unif}(0,1)$.
+
+2. $$X_{i} \,=\, Q(U_{i}) \,=\, \frac{3}{(1-U_{i})^{1/\alpha}}$$
+
+As seen in class, if $U_{i} \sim \text{Unif}(0,1)$, then $1-U_{i} \sim \text{Unif}(0,1)$.
+
+Therefore, it is also equivalent to perform:
+
+$$X_{i} \,=\, Q(1-U_{i}) \,=\, \frac{3}{U_{i}^{1/\alpha}}$$
+
+## Write a Pareto sampler {auto-animate=true}
+
+```{r}
+rpareto <- function(n, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+}
+```
+
+## Write a Pareto sampler {auto-animate=true, visibility=uncounted}
+
+```{r}
+rpareto <- function(n, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+}
+```
+
+## Write a Pareto sampler {auto-animate=true, visibility=uncounted}
+
+```{r}
+rpareto <- function(n, shape, scale=3) {
+  if (scale <= 0) {
+    stop("Value of `scale` must be greater than 0.")
+  }
+  
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1.")
+  }
+  
+  u <- runif(n)
+  qpareto(u, shape=shape, scale=scale)
+}
+```
+
+## Test `rpareto`
+
+```{r, error=TRUE}
+rpareto(n=1, shape=0.5)
+```
+
+. . .
+
+```{r}
+set.seed(99)
+
+rpareto(n=5, shape=3)
+```
+
+. . .
+
+```{r}
+set.seed(99)
+
+rpareto(n=5, shape=3) |>
+  ppareto(shape=3)
+```
+
+# Check our work
+
+## Create population mean and variance functions
+
+```{r}
+pop_mean <- function(shape, scale=3) {
+  if (shape <= 1) {
+    stop("Value of `shape` must be greater than 1 to avoid division by zero.")
+  }
+  
+  (scale * shape) / (shape - 1)
+}
+
+pop_var <- function(shape, scale=3) {
+  if (shape <= 2) {
+    stop("Value of `shape` must be greater than 2 to avoid division by zero.")
+  }
+  
+  (scale^2 * shape) / ((shape - 1)^2 * (shape - 2))
+}
+```
+
+## Generate sample
+
+```{r}
+set.seed(25)
+
+my_sample <- rpareto(n=10000, shape=3)
+```
+
+## Compare values
+
+```{r}
+pop_mean(shape=3)
+mean(my_sample)
+```
+
+. . .
+
+```{r}
+pop_var(shape=3)
+var(my_sample)
+```
+
+. . .
+
+```{r}
+qpareto(p=c(0.25, 0.5, 0.75), shape=3)
+quantile(my_sample, probs=c(0.25, 0.5, 0.75))
+```
+
+## Make a plot
+
+```{r}
+x_vals <- seq(3.01, 250, 0.01)
+
+hist(my_sample, breaks=20, freq=FALSE, main="Histogram of Pareto(3,3) sample", sub="Red line is the true density", xlab="x")
+points(x=x_vals, y=dpareto(x_vals, shape=3), type="l", col="darkred")
+```
