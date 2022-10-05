@@ -4,8 +4,7 @@ date: "October 5, 2022"
 author: "Adam Shen"
 format:
   revealjs:
-    theme: [dark, "../custom.scss"]
-    scrollable: true
+    theme: [dark, "../slides.scss"]
     overview: true
     progress: true
     touch: true
@@ -221,6 +220,10 @@ qpareto <- function(p, shape, scale=3) {
 
 ## Write a function for the quantile function {auto-animate=true, visibility=uncounted}
 
+::: {.panel-tabset}
+
+### Code
+
 Note: `shape` refers to $\alpha$.
 
 ```{r}
@@ -239,7 +242,7 @@ qpareto <- function(p, shape, scale=3) {
 }
 ```
 
-::: {.psmaller}
+### Details
 
 Here, we need to use `any` because the condition `p <= 0 | p > 1` returns a vector greater than
 length 1. If we supply a logical condition with length greater than 1 to `if`, it will only use the
@@ -247,6 +250,8 @@ first element.
 
 `any` evaluates to `TRUE` if the condition inside contains at least one `TRUE`. Otherwise, it
 returns `FALSE`.
+
+In the above, I have chosen to make `p = 0` result in an error since $F(q) = 0$ for any $q \leq 3$.
 
 :::
 

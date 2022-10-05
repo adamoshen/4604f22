@@ -322,7 +322,6 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
-      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -594,6 +593,10 @@
 </section>
 <section id="write-a-function-for-the-quantile-function-2" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Write a function for the quantile function</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Code</a></li><li><a href="#tabset-1-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
 <p>Note: <code>shape</code> refers to <span class="math inline">\alpha</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a href="#cb17-1"></a>qpareto <span class="ot">&lt;-</span> <span class="cf">function</span>(p, shape, <span class="at">scale=</span><span class="dv">3</span>) {</span>
@@ -610,9 +613,13 @@
 <span id="cb17-12" class="hljs-ln-code"><a href="#cb17-12"></a>  }</span>
 <span id="cb17-13" class="hljs-ln-code"><a href="#cb17-13"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="psmaller">
+</div>
+<div id="tabset-1-2">
 <p>Here, we need to use <code>any</code> because the condition <code>p &lt;= 0 | p &gt; 1</code> returns a vector greater than length 1. If we supply a logical condition with length greater than 1 to <code>if</code>, it will only use the first element.</p>
 <p><code>any</code> evaluates to <code>TRUE</code> if the condition inside contains at least one <code>TRUE</code>. Otherwise, it returns <code>FALSE</code>.</p>
+<p>In the above, I have chosen to make <code>p = 0</code> result in an error since <span class="math inline">F(q) = 0</span> for any <span class="math inline">q \leq 3</span>.</p>
+</div>
+</div>
 </div>
 </section>
 <section id="write-a-function-for-the-quantile-function-3" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
