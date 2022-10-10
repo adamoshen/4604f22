@@ -272,7 +272,7 @@ qpareto <- function(p, shape, scale=3) {
   }
   
   if (any(p <= 0 | p >= 1)) {
-    stop("Values of `p` must be in the interval (0, 1].")
+    stop("Values of `p` must be between 0 and 1.")
   }
   
   scale / (1 - p)^(1 / shape)

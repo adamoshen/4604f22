@@ -636,7 +636,7 @@
 <span id="cb18-8" class="hljs-ln-code"><a href="#cb18-8"></a>  }</span>
 <span id="cb18-9" class="hljs-ln-code"><a href="#cb18-9"></a>  </span>
 <span id="cb18-10" class="hljs-ln-code"><a href="#cb18-10"></a>  <span class="cf">if</span> (<span class="fu">any</span>(p <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">|</span> p <span class="sc">&gt;=</span> <span class="dv">1</span>)) {</span>
-<span id="cb18-11" class="hljs-ln-code"><a href="#cb18-11"></a>    <span class="fu">stop</span>(<span class="st">"Values of `p` must be in the interval (0, 1]."</span>)</span>
+<span id="cb18-11" class="hljs-ln-code"><a href="#cb18-11"></a>    <span class="fu">stop</span>(<span class="st">"Values of `p` must be between 0 and 1."</span>)</span>
 <span id="cb18-12" class="hljs-ln-code"><a href="#cb18-12"></a>  }</span>
 <span id="cb18-13" class="hljs-ln-code"><a href="#cb18-13"></a>  </span>
 <span id="cb18-14" class="hljs-ln-code"><a href="#cb18-14"></a>  scale <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">/</span> shape)</span>
@@ -655,7 +655,7 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">qpareto</span>(<span class="at">p=</span><span class="sc">-</span><span class="dv">3</span>, <span class="at">shape=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
-<pre><code>Error in qpareto(p = -3, shape = 3): Values of `p` must be in the interval (0, 1].</code></pre>
+<pre><code>Error in qpareto(p = -3, shape = 3): Values of `p` must be between 0 and 1.</code></pre>
 </div>
 </div>
 </div>
