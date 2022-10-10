@@ -238,7 +238,7 @@ qpareto <- function(p, shape, scale=3) {
     stop("Value of `shape` must be greater than 1.")
   }
   
-  if (any(p <= 0 | p > 1)) {
+  if (any(p <= 0 | p >= 1)) {
     stop("Values of `p` must be between 0 and 1.")
   }
 }
@@ -246,7 +246,7 @@ qpareto <- function(p, shape, scale=3) {
 
 ### Details
 
-Here, we need to use `any` because the condition `p <= 0 | p > 1` returns a vector greater than
+Here, we need to use `any` because the condition `p <= 0 | p >= 1` returns a vector greater than
 length 1. If we supply a logical condition with length greater than 1 to `if`, it will only use the
 first element.
 
@@ -254,7 +254,7 @@ first element.
 returns `FALSE`.
 
 In the above, I have chosen to make `p = 0` result in an error since $F(q) = 0$ for any $q \leq 3$.
-
+`p = 1` will result in division by zero, and therefore should also raise an error.
 :::
 
 ## Write a function for the quantile function {auto-animate=true, visibility=uncounted}
@@ -271,7 +271,7 @@ qpareto <- function(p, shape, scale=3) {
     stop("Value of `shape` must be greater than 1.")
   }
   
-  if (any(p <= 0 | p > 1)) {
+  if (any(p <= 0 | p >= 1)) {
     stop("Values of `p` must be in the interval (0, 1].")
   }
   
