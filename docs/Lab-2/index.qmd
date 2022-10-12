@@ -1,0 +1,375 @@
+---
+title: "Stat 4604: Lab 2"
+date: "October 12, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Function of the day
+
+Consider the cubic function
+
+$$f(x) \,=\, x^{3} \,-\, 2x^{2} \,-\, 4, \quad x \in \mathbb{R}.$$
+
+Task: write a function in R to compute $f(x)$.
+
+## Write a function for $f(x)$
+
+```{r}
+f <- function(x) {
+  x^3 - 2*x^2 - 4
+}
+```
+
+<p></p>
+
+. . .
+
+```{r}
+f(0)
+```
+
+. . .
+
+```{r}
+f(c(-3, -1, 2, 5))
+```
+
+## Write a function for $f'(x)$
+
+$$f'(x) \,=\, 3x^{2} \,-\, 4x$$
+
+```{r}
+fprime <- function(x) {
+  3*x^2 - 4*x
+}
+```
+
+<p></p>
+
+. . .
+
+```{r}
+fprime(0)
+```
+
+. . .
+
+```{r}
+fprime(c(-3, 1, 2, 5))
+```
+
+## The central finite difference
+
+- Working out a derivative by hand can be tedious/difficult in some situations
+
+- Having a numerical approximation is quite useful
+
+- One approach is to use the central finite difference:
+
+$$d(f,x,h) \,=\, \frac{f(x+h) \,-\, f(x-h)}{2h},$$
+
+for $h$ small.
+
+Task: Write a function in R for the central finite difference.
+
+
+## Write a function for the central finite difference {auto-animate=true}
+
+```{r}
+cfd <- function(f, x, h) {
+  if (any(h <= 0)) {
+    stop("`h` needs to be greater than 0.")
+  }
+}
+```
+
+I want this function to be vectorized over `h` since this will be useful later on. As such, we must
+use `any` in the condition supplied to `if`.
+
+## Write a function for the central finite difference {auto-animate=true, visibility=uncounted}
+
+```{r}
+cfd <- function(f, x, h) {
+  if (any(h <= 0)) {
+    stop("`h` needs to be greater than 0.")
+  }
+  
+  (f(x + h) - f(x - h)) / (2 * h)
+}
+```
+
+## Test `cfd`
+
+Let us test `cfd` using:
+
+- $f(x) = x^{3} \,-\, 2x^{2} \,-\, 4$
+- $x = 2$
+- $h = 1 \times 10^{-8}$
+
+## Test `cfd`
+
+```{r}
+cfd(f=f, x=2, h=1e-8)
+```
+
+. . .
+
+Compare this result to the "true" derivative value:
+
+```{r}
+fprime(2)
+```
+
+. . .
+
+Looks good!
+
+## Using `cfd` with a range of `h` values
+
+Task: We wish to see what happens when we compute:
+
+- $d(f,2,h)$ and
+- the absolute difference, $|d(f,2,h) \,-\, f'(2)|$
+
+as $h$ increments from $10^{-1}$ to $10^{-17}$ in powers of $10^{-1}$.
+
+## The base-R approach {auto-animate=true}
+
+```{r}
+results_base <- data.frame(h = 10 ^ (-1:-17))
+
+results_base
+```
+
+## The base-R approach {auto-animate=true, visibility=uncounted}
+
+```{r}
+results_base <- data.frame(h = 10 ^ (-1:-17)) |>
+  transform(cfd_values = cfd(f=f, x=2, h=h))
+
+results_base
+```
+
+## The base-R approach {auto-animate=true, visibility=uncounted}
+
+```{r}
+results_base <- data.frame(h = 10 ^ (-1:-17)) |>
+  transform(cfd_values = cfd(f=f, x=2, h=h)) |>
+  transform(abs_diff = abs(cfd_values - fprime(2)))
+
+results_base
+```
+
+## The tidyverse approach (setup)
+
+If you do not already have the tidyverse on your device, you can install it using
+
+```{r, eval=FALSE}
+install.packages("tidyverse")
+```
+
+If you only wish to install the required packages for today's demo, you can use
+
+```{r, eval=FALSE}
+install.packages("tibble")
+install.packages("dplyr")
+```
+
+. . .
+
+Once the required packages are installed, load `tibble` and `dplyr` using
+
+```{r}
+library(tibble)
+library(dplyr)
+```
+
+## The tidyverse approach {auto-animate=true}
+
+```{r}
+results_tidy <- tibble(h = 10 ^ (-1:-17))
+
+results_tidy
+```
+
+## The tidyverse approach {auto-animate=true, visibility=uncounted}
+
+```{r}
+results_tidy <- tibble(h = 10 ^ (-1:-17)) %>%
+  mutate(
+    cfd_values = cfd(f=f, x=2, h=h),
+    abs_diff = abs(cfd_values - fprime(2))
+  )
+
+results_tidy
+```
+
+## What do we notice?
+
+```{r, echo=FALSE}
+results_tidy %>%
+  slice_tail(n=2)
+```
+
+- For $h = 10^{-16}$ and $h = 10^{-17}$, the value returned by the central finite difference is
+zero!
+
+- Why is this happening?
+
+## What's going on?!
+
+```{r}
+h1 <- 1e-16
+```
+
+<p></p>
+
+. . .
+
+```{r}
+2 + h1
+2 - h1
+```
+
+<p></p>
+
+. . .
+
+```{r}
+f(2 + h1)
+f(2 - h1)
+f(2 + h1) - f(2 - h1)
+2 * h1
+```
+
+## What's going on?
+
+- The issue is occurring in the numerator of the central finite difference
+
+- As `h` gets very small, `f(2 + h)` and `f(2 - h)` will be nearly identical, resulting in a
+difference of zero
+
+- As such, the `cfd` function is returning a value of zero
+
+# Base-R vs Tidyverse
+
+## Did you spot the differences?
+
+- Tibbles are fancier data frames that have nice printing features
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+results_base
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+results_tidy
+```
+
+:::
+
+::::
+
+## Did you spot the differences?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r, eval=FALSE}
+results_base <- data.frame(h = 10 ^ (-1:-17)) |>
+  transform(cfd_values = cfd(f=f, x=2, h=h)) |>
+  transform(abs_diff = abs(cfd_values - fprime(2)))
+```
+
+- `transform` needed to be called twice because the creation of variables cannot use other variables
+created in the same call
+
+- In the above, in order to create `abs_diff`, it required that `cfd_values` already existed within
+the data set
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+results_tidy <- tibble(h = 10 ^ (-1:-17)) %>%
+  mutate(
+    cfd_values = cfd(f=f, x=2, h=h),
+    abs_diff = abs(cfd_values - fprime(2))
+  )
+```
+
+- `mutate` creates variables sequentially
+
+- This means that we can create multiple variables within a single call to `mutate` and variables
+can depend on one another
+
+:::
+
+::::
+
+## Did you spot the differences?
+
+- The base-R pipe, `|>`, was a very recent addition to base-R
+
+- It was introduced in R 4.1 (2021) with additional functionality added in R 4.2 (2022), possibly
+still more functionalities to come
+
+- It does not have as many features as the Tidyverse pipe, `%>%`, which has been around since 2014
+
+- The Tidyverse pipe, `%>%`, becomes available upon loading either the `tibble` or `dplyr` packages,
+but originates from the `magrittr` package
+
+- For most basic use cases, it will not matter which pipe you use
+
+- My opinion: if you have already loaded packages such as `tibble` or `dplyr`, you *might as well*
+use the Tidyverse pipe...
