@@ -1,0 +1,409 @@
+---
+title: "Stat 4604: Lab 3"
+date: "October 19, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Today's packages
+
+We will be using the Tidyverse extensively today since we are working with data frames.
+
+```{r, message=TRUE}
+library(tidyverse)
+library(broom)
+theme_set(theme_bw())
+```
+
+As usual, packages can be installed using `install.packages("package-name")` and only needs to be
+done once per device.
+
+We will be plotting with the `ggplot2` package later. `theme_set(theme_bw())` sets a plotting theme.
+
+## Read in the data
+
+```{r}
+drugs <- read_csv("./data/Pdata.csv")
+
+drugs
+```
+
+Note: although the lab instructions say to extract the counts as `N` and the covariates as `X` from
+the data set, this is not necessary (and in my opinion, not recommended).
+
+## Fit a basic GLM
+
+```{r}
+model <- glm(N ~ ., family="poisson", data=drugs)
+```
+
+- In the formula `N ~ .`:
+
+  - The `N` on the left hand side means that we want `N` to be the dependent variable
+  
+  - The `.` on the right hand side means that we want all other variables appearing in the data set
+  (other than `N`) to be used as covariates
+  
+  - The usage of the `.` in formulas is especially useful when our model uses all variables found
+  in a data set, saving us from needing to type out the names of all the variables individually
+
+## Inspect the GLM
+
+```{r}
+summary(model)
+```
+
+## Parametric bootstrap
+
+- The parametric bootstrap is a procedure that begins with simulating the observation of "new" data
+by sampling the current data **with replacement**
+
+. . .
+
+- This new resampled data is then used to fit a new model in order to obtain new parameter estimates
+
+. . .
+
+- Once we have resampled our data and fit new models a sufficient number of times, we can aggregate
+all the parameter estimates and perform inference
+
+. . .
+
+Task: create a function that performs the parametric bootstrap and returns the parameter estimates
+from each re-fitting.
+
+## ✔️ yourself before you 💥 yourself
+
+- We should make sure that our existing and new variable names are clear
+
+  - We will need to compare our bootstrap results with the original model so we don't want to get
+  them mixed up
+  
+  - We want to make sure that we don't end up in a situation where you resample from a recently
+  resampled data set
+
+. . .
+
+- Since *one observation* corresponds to *one row* in our data set, we need to make sure that
+we are resampling **entire rows** from the data set and that we are **not** resampling the response
+values independently of the covariate values
+
+  - In other words, there should not be any "shuffling" of response values among covariate values
+
+## Procedure outline
+
+0. Initialize a variable that will store our parameter estimates. We do not need to store the
+resampled data, or the re-fitted models!
+
+1. Create a resample of the original data set.
+
+2. Fit a new model using the resampled data.
+
+3. Extract parameter estimates from the model and store them for later.
+
+4. Repeat steps 1 to 3 a pre-specified number of times.
+
+## Checklist for building our function
+
+Our function should have arguments for:
+
+- The data set that needs to be resampled
+  
+  - We don't want the function to depend on the existence of a data set in our global environment
+  called `drugs`. This will allow us to reuse this function in the future with different data
+  sets, if needed
+  
+. . .
+  
+- The original model that we created
+  
+  - We will take advantage of the `update` function that exists in base-R
+
+  - This function will allow us to "swap" the data set used in the original model with our resampled
+  data and the model will automatically get re-fitted
+  
+. . .
+
+- The number of times we wish to repeat the procedure
+  
+## Build our function {auto-animate=true}
+
+```{r, eval=FALSE}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+}
+```
+
+We start by creating a matrix with `n` rows and three columns. This matrix has no row names. The
+column names will be the names of the covariates in our original model. We will coerce this matrix
+to a tibble at the end.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  
+  for (iter in 1:n) {
+  
+  }
+}
+```
+
+We will use a `for` loop since we know exactly how many times to repeat the procedure.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  
+  for (iter in 1:n) {
+    resampled_data <- original_data %>%
+      slice_sample(n=nrow(original_data), replace=TRUE)
+  }
+}
+```
+
+We resample from `original_data` using the `slice_sample` function (From `dplyr`), which returns a
+random sample of the rows of a data set. We specify:
+
+- `n=nrow(original_data)` since we want our resampled data to have the same number of rows as the
+original data
+
+- `replace=TRUE` because we want to sample with replacement
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  
+  for (iter in 1:n) {
+    resampled_data <- original_data %>%
+      slice_sample(n=nrow(original_data), replace=TRUE)
+    
+    refitted_model <- original_model %>%
+      update(data=resampled_data)
+  }
+}
+```
+
+We pass our original model to the `update` function and specify `data=resampled_data`. This means
+that we want to update the fit of our original model by updating the data used to fit the model.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  
+  for (iter in 1:n) {
+    resampled_data <- original_data %>%
+      slice_sample(n=nrow(original_data), replace=TRUE)
+    
+    refitted_model <- original_model %>%
+      update(data=resampled_data)
+    
+    out[iter, ] <- coef(refitted_model)
+  }
+}
+```
+
+We update the `iter`th row of the matrix that stores our parameter estimates.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r}
+bootstrap_glm <- function(original_data, original_model, n) {
+  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  
+  for (iter in 1:n) {
+    resampled_data <- original_data %>%
+      slice_sample(n=nrow(original_data), replace=TRUE)
+    
+    refitted_model <- original_model %>%
+      update(data=resampled_data)
+    
+    out[iter, ] <- coef(refitted_model)
+  }
+  
+  as_tibble(out)
+}
+```
+
+We coerce our results into a nice tibble before returning it.
+
+## Test our function
+
+```{r, cache=TRUE}
+set.seed(99)
+
+boot_coefs <- bootstrap_glm(drugs, model, n=10000)
+```
+
+This took about 25 seconds to complete. You may wish to decrease `n` if it is taking too long.
+
+. . .
+
+```{r}
+boot_coefs
+```
+
+## Histogram for bootstrapped $\widehat{\beta}_{1}$
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+ggplot(boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)), 
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  )
+```
+
+### Plot
+
+```{r, echo=FALSE}
+ggplot(boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  )
+```
+
+:::
+
+## Overlay a predicted density
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+mean_boot_beta1 <- mean(boot_coefs$Trt)
+sd_boot_beta1 <- sd(boot_coefs$Trt)
+
+ggplot(boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  ) +
+  geom_function(
+    fun=dnorm, args=list(mean=mean_boot_beta1, sd=sd_boot_beta1),
+    colour="#D55E00", size=1.2
+  )
+```
+
+### Plot
+
+```{r, echo=FALSE}
+mean_boot_beta1 <- mean(boot_coefs$Trt)
+sd_boot_beta1 <- sd(boot_coefs$Trt)
+
+ggplot(boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  ) +
+  geom_function(
+    fun=dnorm, args=list(mean=mean_boot_beta1, sd=sd_boot_beta1),
+    colour="#D55E00", size=1.2
+  )
+```
+
+:::
+
+## Compute confidence intervals for $\beta_{1}$
+
+Using 95% confidence level.
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+list(
+  boot_norm = tibble(
+    lwr = mean_boot_beta1 - qnorm(0.975) * sd_boot_beta1,
+    upr = mean_boot_beta1 + qnorm(0.975) * sd_boot_beta1
+  ),
+  
+  boot_perc = tibble(
+    lwr = quantile(boot_coefs$Trt, 0.025),
+    upr = quantile(boot_coefs$Trt, 0.975)
+  ),
+  
+  wald = model %>%
+    confint.default() %>%
+    as_tibble() %>%
+    slice(2) %>%
+    rename(lwr=1, upr=2)
+)
+```
+
+### Output
+
+```{r, echo=FALSE}
+list(
+  boot_norm = tibble(
+    lwr = mean_boot_beta1 - qnorm(0.975) * sd_boot_beta1,
+    upr = mean_boot_beta1 + qnorm(0.975) * sd_boot_beta1
+  ),
+  
+  boot_perc = tibble(
+    lwr = quantile(boot_coefs$Trt, 0.025),
+    upr = quantile(boot_coefs$Trt, 0.975)
+  ),
+  
+  wald = model %>%
+    confint.default() %>%
+    as_tibble() %>%
+    slice(2) %>%
+    rename(lwr=1, upr=2)
+)
+```
+
+:::
