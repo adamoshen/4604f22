@@ -51,7 +51,6 @@ We will be using the Tidyverse extensively today since we are working with data 
 
 ```{r, message=TRUE}
 library(tidyverse)
-library(broom)
 theme_set(theme_bw())
 ```
 
