@@ -51,11 +51,14 @@ We will be using the Tidyverse extensively today since we are working with data 
 
 ```{r, message=TRUE}
 library(tidyverse)
-theme_set(theme_bw())
 ```
 
 As usual, packages can be installed using `install.packages("package-name")` and only needs to be
 done once per device.
+
+```{r}
+theme_set(theme_bw())
+```
 
 We will be plotting with the `ggplot2` package later. `theme_set(theme_bw())` sets a plotting theme.
 
@@ -169,19 +172,25 @@ Our function should have arguments for:
 
 ```{r, eval=FALSE}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
 }
 ```
 
-We start by creating a matrix with `n` rows and three columns. This matrix has no row names. The
-column names will be the names of the covariates in our original model. We will coerce this matrix
-to a tibble at the end.
+We start by creating a matrix with `n` rows, and columns according to the number of parameters in
+the original model. This matrix has no row names. The column names will be the names of the
+covariates in our original model. We will coerce this matrix to a tibble at the end.
 
 ## Build our function {auto-animate=true, visibility=uncounted}
 
 ```{r, eval=FALSE}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
   
   for (iter in 1:n) {
   
@@ -195,7 +204,10 @@ We will use a `for` loop since we know exactly how many times to repeat the proc
 
 ```{r, eval=FALSE}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
   
   for (iter in 1:n) {
     resampled_data <- original_data %>%
@@ -216,7 +228,10 @@ original data
 
 ```{r, eval=FALSE}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
   
   for (iter in 1:n) {
     resampled_data <- original_data %>%
@@ -235,7 +250,10 @@ that we want to update the fit of our original model by updating the data used t
 
 ```{r, eval=FALSE}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
   
   for (iter in 1:n) {
     resampled_data <- original_data %>%
@@ -255,7 +273,10 @@ We update the `iter`th row of the matrix that stores our parameter estimates.
 
 ```{r}
 bootstrap_glm <- function(original_data, original_model, n) {
-  out <- matrix(nrow=n, ncol=3, dimnames=list(NULL, names(coef(original_model))))
+  out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
   
   for (iter in 1:n) {
     resampled_data <- original_data %>%
@@ -271,7 +292,8 @@ bootstrap_glm <- function(original_data, original_model, n) {
 }
 ```
 
-We coerce our results into a nice tibble before returning it.
+We coerce our results into a nice tibble before returning it. Note that this function is general
+enough that in addition to `glm` support, it will also supports models of class `lm`.
 
 ## Test our function
 
