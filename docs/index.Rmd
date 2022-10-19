@@ -26,6 +26,8 @@ MTC Hours: Wednesdays 2pm to 4pm
 
 [Lab 2, October 12](./Lab-2/)
 
+[Lab 3, October 19](./Lab-3/)
+
 ***
 
 <details><summary>Session Info</summary>
