@@ -95,7 +95,7 @@ model <- glm(N ~ ., family="poisson", data=drugs)
 summary(model)
 ```
 
-## Parametric bootstrap
+## Non-parametric bootstrap
 
 - The parametric bootstrap is a procedure that begins with simulating the observation of "new" data
 by sampling the current data **with replacement**
