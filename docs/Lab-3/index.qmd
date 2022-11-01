@@ -65,9 +65,9 @@ We will be plotting with the `ggplot2` package later. `theme_set(theme_bw())` se
 ## Read in the data
 
 ```{r}
-drugs <- read_csv("./data/Pdata.csv")
+migraine <- read_csv("./data/Pdata.csv")
 
-drugs
+migraine
 ```
 
 Note: although the lab instructions say to extract the counts as `N` and the covariates as `X` from
@@ -76,7 +76,7 @@ the data set, this is not necessary (and in my opinion, not recommended).
 ## Fit a basic GLM
 
 ```{r}
-model <- glm(N ~ ., family="poisson", data=drugs)
+model <- glm(N ~ ., family="poisson", data=migraine)
 ```
 
 - In the formula `N ~ .`:
@@ -97,7 +97,7 @@ summary(model)
 
 ## Non-parametric bootstrap
 
-- The parametric bootstrap is a procedure that begins with simulating the observation of "new" data
+- The non-parametric bootstrap is a procedure that begins with simulating the observation of "new" data
 by sampling the current data **with replacement**
 
 . . .
@@ -152,7 +152,7 @@ Our function should have arguments for:
 - The data set that needs to be resampled
   
   - We don't want the function to depend on the existence of a data set in our global environment
-  called `drugs`. This will allow us to reuse this function in the future with different data
+  called `migraine`. This will allow us to reuse this function in the future with different data
   sets, if needed
   
 . . .
@@ -300,7 +300,7 @@ enough that in addition to `glm` support, it will also supports models of class 
 ```{r, cache=TRUE}
 set.seed(99)
 
-boot_coefs <- bootstrap_glm(drugs, model, n=10000)
+boot_coefs <- bootstrap_glm(migraine, model, n=10000)
 ```
 
 This took about 25 seconds to complete. You may wish to decrease `n` if it is taking too long.

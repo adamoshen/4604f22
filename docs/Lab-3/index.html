@@ -444,9 +444,9 @@
 <section id="read-in-the-data" class="slide level2">
 <h2>Read in the data</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>drugs <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./data/Pdata.csv"</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>migraine <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"./data/Pdata.csv"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>drugs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3"></a>migraine</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 50 x 3</span>
        N   Trt   sBMI
    <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
@@ -468,7 +468,7 @@
 <section id="fit-a-basic-glm" class="slide level2">
 <h2>Fit a basic GLM</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(N <span class="sc">~</span> ., <span class="at">family=</span><span class="st">"poisson"</span>, <span class="at">data=</span>drugs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(N <span class="sc">~</span> ., <span class="at">family=</span><span class="st">"poisson"</span>, <span class="at">data=</span>migraine)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><p>In the formula <code>N ~ .</code>:</p>
@@ -486,7 +486,7 @@
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-glm(formula = N ~ ., family = "poisson", data = drugs)
+glm(formula = N ~ ., family = "poisson", data = migraine)
 
 Deviance Residuals: 
    Min      1Q  Median      3Q     Max  
@@ -513,7 +513,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <section id="non-parametric-bootstrap" class="slide level2">
 <h2>Non-parametric bootstrap</h2>
 <ul>
-<li>The parametric bootstrap is a procedure that begins with simulating the observation of "new" data by sampling the current data <strong>with replacement</strong></li>
+<li>The non-parametric bootstrap is a procedure that begins with simulating the observation of "new" data by sampling the current data <strong>with replacement</strong></li>
 </ul>
 <div class="fragment">
 <ul>
@@ -563,7 +563,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <ul>
 <li><p>The data set that needs to be resampled</p>
 <ul>
-<li>We don't want the function to depend on the existence of a data set in our global environment called <code>drugs</code>. This will allow us to reuse this function in the future with different data sets, if needed</li>
+<li>We don't want the function to depend on the existence of a data set in our global environment called <code>migraine</code>. This will allow us to reuse this function in the future with different data sets, if needed</li>
 </ul></li>
 </ul>
 <div class="fragment">
@@ -698,10 +698,10 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </section>
 <section id="test-our-function" class="slide level2">
 <h2>Test our function</h2>
-<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-13_db6e292650d2c70520acb527450201c3">
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-13_6b13d930852aede27e4d14aae83c0e6a">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a>boot_coefs <span class="ot">&lt;-</span> <span class="fu">bootstrap_glm</span>(drugs, model, <span class="at">n=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3"></a>boot_coefs <span class="ot">&lt;-</span> <span class="fu">bootstrap_glm</span>(migraine, model, <span class="at">n=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This took about 25 seconds to complete. You may wish to decrease <code>n</code> if it is taking too long.</p>
 <div class="fragment">
