@@ -411,7 +411,7 @@ boot_results[5001:5006, ]
 ### Code
 
 ```{r, eval=FALSE}
-ggplot(data=boot_results, aes(x=Trt, y=after_stat(density), colour=method, fill=method)) +
+ggplot(boot_results, aes(x=Trt, y=after_stat(density), colour=method, fill=method)) +
   geom_histogram(alpha=0.7) +
   scale_colour_manual(values = c("#56B4E9", "#E69F00")) +
   scale_fill_manual(values = c("#0072B2", "#D55E00"))
@@ -420,7 +420,7 @@ ggplot(data=boot_results, aes(x=Trt, y=after_stat(density), colour=method, fill=
 ### Plot
 
 ```{r, echo=FALSE}
-ggplot(data=boot_results, aes(x=Trt, y=after_stat(density), colour=method, fill=method)) +
+ggplot(boot_results, aes(x=Trt, y=after_stat(density), colour=method, fill=method)) +
   geom_histogram(alpha=0.7) +
   scale_colour_manual(values = c("#56B4E9", "#E69F00")) +
   scale_fill_manual(values = c("#0072B2", "#D55E00"))
@@ -695,11 +695,18 @@ boot_t_ci_glm <- function(original_data, original_model, B=500, R=100, level=0.9
     boot_se[b] <- sd(boot_vals)
   }
   
+  original_estimate <- original_model %>%
+    coef() %>%
+    pluck(term)
+  
   z <- (boot_estimates - original_estimate) / boot_se
 }
 ```
 
 ### Details
+
+- `original_estimate` is the observed estimate, $\widehat{\theta}$. In this case, we are extracting
+the value of $\widehat{\beta}_{1}$ from our original model.
 
 - We compute all of the required $z^{(b)}$ values by taking advantage of the fact that operations
 such as subtraction and division are vectorized.
@@ -741,11 +748,14 @@ boot_t_ci_glm <- function(original_data, original_model, B=500, R=100, level=0.9
     boot_se[b] <- sd(boot_vals)
   }
   
+  original_estimate <- original_model %>%
+    coef() %>%
+    pluck(term)
+  
   z <- (boot_estimates - original_estimate) / boot_se
 
   alpha <- 1 - level
   q <- quantile(z, probs=c(alpha/2, 1-alpha/2), names=FALSE)
-  
 }
 ```
 
@@ -790,14 +800,15 @@ boot_t_ci_glm <- function(original_data, original_model, B=500, R=100, level=0.9
     boot_se[b] <- sd(boot_vals)
   }
   
+  original_estimate <- original_model %>%
+    coef() %>%
+    pluck(term)
+  
   z <- (boot_estimates - original_estimate) / boot_se
 
   alpha <- 1 - level
   q <- quantile(z, probs=c(alpha/2, 1-alpha/2), names=FALSE)
   
-  original_estimate <- original_model %>%
-    coef() %>%
-    pluck(term)
   se_boot_estimates <- sd(boot_estimates)
   
   (original_estimate - q * se_boot_estimates) %>%
@@ -807,9 +818,6 @@ boot_t_ci_glm <- function(original_data, original_model, B=500, R=100, level=0.9
 ```
 
 ### Details
-
-- `original_estimate` is the observed estimate, $\widehat{\theta}$. In this case, we are extracting
-the value of $\widehat{\beta}_{1}$ from our original model.
 
 - `se_boot_estimates` is the standard error of all the bootstrapped estimates of $\beta_{1}$ (this
 is the quantity denoted $\widehat{\text{se}}_{B}$ in the Week 6 notes).
