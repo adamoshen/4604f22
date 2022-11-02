@@ -1,0 +1,480 @@
+---
+title: "Stat 4604: Lab 3"
+date: "October 19, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Today's packages
+
+We will be using the Tidyverse extensively today since we are working with data frames.
+
+```{r, message=TRUE}
+library(tidyverse)
+```
+
+As usual, packages can be installed using `install.packages("package-name")` and only needs to be
+done once per device.
+
+```{r}
+theme_set(theme_bw())
+```
+
+We will be plotting with the `ggplot2` package later. `theme_set(theme_bw())` sets a plotting theme.
+
+## Read in the data
+
+```{r}
+migraine <- read_csv("./data/Pdata.csv")
+
+migraine
+```
+
+Note: although the lab instructions say to extract the counts as `N` and the covariates as `X` from
+the data set, this is not necessary (and in my opinion, not recommended).
+
+## Fit a basic GLM
+
+```{r}
+model <- glm(N ~ ., family="poisson", data=migraine)
+```
+
+- In the formula `N ~ .`:
+
+  - The `N` on the left hand side means that we want `N` to be the dependent variable
+  
+  - The `.` on the right hand side means that we want all other variables appearing in the data set
+  (other than `N`) to be used as covariates
+  
+  - The usage of the `.` in formulas is especially useful when our model uses all variables found
+  in a data set, saving us from needing to type out the names of all the variables individually
+
+## Inspect the GLM
+
+```{r}
+summary(model)
+```
+
+## The parametric bootstrap
+
+- The parametric bootstrap is a procedure that begins with simulating the observation of "new" data
+by sampling from some distribution where initial parameter estimates are taken to be the truth
+
+. . .
+
+- This newly simulated data is then used to fit a new model in order to obtain new parameter
+estimates
+
+. . .
+
+- Once we have resimulated our data and fit new models a sufficient number of times, we can
+aggregate all the parameter estimates and perform inference
+
+. . .
+
+Task: create a function that performs the parametric bootstrap and returns the parameter estimates
+from each re-fitting.
+
+## Procedure outline
+
+0. Initialize a variable that will store our parameter estimates. We do not need to store any of the
+simulated data, or the re-fitted models!
+
+1. Create a simulated data set using parameter estimates of the original model.
+
+2. Fit a new model using the simulated data.
+
+3. Extract parameter estimates from the model and store them for later.
+
+Repeat steps 1 to 3 a pre-specified number of times.
+
+## Checklist for building our function
+
+Our function should have arguments for:
+
+- The data set that needs to be resampled
+  
+  - We don't want the function to depend on the existence of a data set in our global environment
+  called `migraine`. This will allow us to reuse this function in the future with different data
+  sets, if needed
+
+. . .
+
+- The original model that we created
+  
+  - We will take advantage of the `update` function that exists in base-R
+
+  - This function will allow us to "swap" the data set used in the original model with our simulated
+  data and the model will automatically get re-fitted
+
+. . .
+
+- The number of times we wish to repeat the procedure
+
+## Sampling from the Poisson distribution
+
+- We make the assumption that
+
+$$N_{i} \,\sim\, \text{Pois}(\lambda=\mu_{i}),$$
+
+where
+
+$$\mu_{i} \,=\, \exp{\lbrace\beta_{0} \,+\, \beta_{1}x_{i1} \,+\, \beta_{2}x_{i2}\rbrace}$$
+
+. . .
+
+- To get the estimate, $\widehat{\mu}_{i}$, for each set of covariate values, we will need to use
+
+```{r, eval=FALSE}
+predict(model, type="response")
+```
+
+## Sampling from the Poisson distribution
+
+- If instead, we used:
+
+```{r, eval=FALSE}
+predict(model)
+```
+
+this would make predictions on the predictor scale, i.e.
+
+$$\log{(\widehat{\mu}_{i})} \,=\, \widehat{\beta}_{0} \,+\, \widehat{\beta}_{1}x_{i1} \,+\,
+\widehat{\beta}_{2}x_{i2}$$
+
+. . .
+
+- For a data set consisting of 50 observations, we will
+
+  - Estimate $\mu_{i}$ using each set of covariate values
+  
+  - Pass this value of $\widehat{\mu}_{i}$ to the `lambda` argument of the `rpois` function and
+  generate a single observation
+  
+  - Use these newly generated values as our new vector of $N_{i}$s
+
+## Build our function {auto-animate=true}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+}
+```
+
+We start by creating a matrix with `n` rows, and columns according to the number of parameters in
+the original model. This matrix has no row names. The column names will be the names of the
+covariates in our original model. We will coerce this matrix to a tibble at the end.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+}
+```
+
+We create the variable `mu_hat` to store the predicted values of $\mu_{i}$. We do this outside of
+the loop that we will eventually use because these values stay constant and do not need to
+recalculated repeatedly.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+  
+  for (iter in 1:n) {
+  
+  }
+}
+```
+
+We will use a `for` loop since we know exactly how many times to repeat the procedure.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+  
+  for (iter in 1:n) {
+    simulated_data <- original_data %>%
+      mutate(N = rpois(nrow(original_data), lambda=mu_hat))
+  }
+}
+```
+
+Our simulated data will be based off of the original data. We pass it to `mutate` to overwite the
+existing values of `N` with our newly generated values of `N`.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+  
+  for (iter in 1:n) {
+    simulated_data <- original_data %>%
+      mutate(N = rpois(nrow(original_data), lambda=mu_hat))
+    
+    refitted_model <- original_model %>%
+      update(data=simulated_data)
+  }
+}
+```
+
+We pass our original model to the `update` function and specify `data=simulated_data`. This means
+that we want to update the fit of our original model by updating the data used to fit the model.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+  
+  for (iter in 1:n) {
+    simulated_data <- original_data %>%
+      mutate(N = rpois(nrow(original_data), lambda=mu_hat))
+    
+    refitted_model <- original_model %>%
+      update(data=simulated_data)
+    
+    out[iter, ] <- coef(refitted_model)
+  }
+}
+```
+
+We update the `iter`th row of the matrix that stores our parameter estimates.
+
+## Build our function {auto-animate=true, visibility=uncounted}
+
+```{r}
+para_bootstrap_poisson <- function(original_data, original_model, n) {
+  out <- out <- matrix(
+    nrow=n, ncol=length(coef(original_model)),
+    dimnames=list(NULL, names(coef(original_model)))
+  )
+  
+  mu_hat <- predict(original_model, type="response")
+  
+  for (iter in 1:n) {
+    simulated_data <- original_data %>%
+      mutate(N = rpois(nrow(original_data), lambda=mu_hat))
+    
+    refitted_model <- original_model %>%
+      update(data=simulated_data)
+    
+    out[iter, ] <- coef(refitted_model)
+  }
+  
+  as_tibble(out)
+}
+```
+
+We coerce our results into a nice tibble before returning it.
+
+## Test our function
+
+```{r, cache=TRUE}
+set.seed(99)
+
+para_boot_coefs <- para_bootstrap_poisson(migraine, model, n=10000)
+```
+
+```{r, eval=FALSE, include=FALSE}
+write_rds(para_boot_coefs, "./data/para_boot_coefs.rds")
+```
+
+<p></p>
+
+. . .
+
+```{r}
+para_boot_coefs
+```
+
+## Histogram for bootstrapped $\widehat{\beta}_{1}$
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+ggplot(para_boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)), 
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  )
+```
+
+### Plot
+
+```{r, echo=FALSE}
+ggplot(boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  )
+```
+
+:::
+
+## Overlay a predicted density
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+mean_para_boot_beta1 <- mean(para_boot_coefs$Trt)
+sd_para_boot_beta1 <- sd(para_boot_coefs$Trt)
+
+ggplot(para_boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  ) +
+  geom_function(
+    fun=dnorm, args=list(mean=mean_para_boot_beta1, sd=sd_para_boot_beta1),
+    colour="#D55E00", size=1.2
+  )
+```
+
+### Plot
+
+```{r, echo=FALSE}
+mean_para_boot_beta1 <- mean(para_boot_coefs$Trt)
+sd_para_boot_beta1 <- sd(para_boot_coefs$Trt)
+
+ggplot(para_boot_coefs, aes(x=Trt)) +
+  geom_histogram(
+    aes(y=after_stat(density)),
+    colour="#56B4E9", fill="#0072B2", alpha=0.7
+  ) +
+  geom_function(
+    fun=dnorm, args=list(mean=mean_para_boot_beta1, sd=sd_para_boot_beta1),
+    colour="#D55E00", size=1.2
+  )
+```
+
+:::
+
+## Compute confidence intervals for $\beta_{1}$
+
+Using 95% confidence level.
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+list(
+  boot_norm = tibble(
+    lwr = mean_para_boot_beta1 - qnorm(0.975) * sd_para_boot_beta1,
+    upr = mean_para_boot_beta1 + qnorm(0.975) * sd_para_boot_beta1
+  ),
+  
+  boot_perc = tibble(
+    lwr = quantile(para_boot_coefs$Trt, 0.025),
+    upr = quantile(para_boot_coefs$Trt, 0.975)
+  ),
+  
+  wald = model %>%
+    confint.default() %>%
+    as_tibble() %>%
+    slice(2) %>%
+    rename(lwr=1, upr=2)
+)
+```
+
+### Output
+
+```{r, echo=FALSE}
+list(
+  boot_norm = tibble(
+    lwr = mean_para_boot_beta1 - qnorm(0.975) * sd_para_boot_beta1,
+    upr = mean_para_boot_beta1 + qnorm(0.975) * sd_para_boot_beta1
+  ),
+  
+  boot_perc = tibble(
+    lwr = quantile(para_boot_coefs$Trt, 0.025),
+    upr = quantile(para_boot_coefs$Trt, 0.975)
+  ),
+  
+  wald = model %>%
+    confint.default() %>%
+    as_tibble() %>%
+    slice(2) %>%
+    rename(lwr=1, upr=2)
+)
+```
+
+:::
