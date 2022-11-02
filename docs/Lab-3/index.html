@@ -744,6 +744,8 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <span id="cb16-2"><a href="#cb16-2"></a></span>
 <span id="cb16-3"><a href="#cb16-3"></a>para_boot_coefs <span class="ot">&lt;-</span> <span class="fu">para_bootstrap_poisson</span>(migraine, model, <span class="at">n=</span><span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>
+</p>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>para_boot_coefs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -763,9 +765,124 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <span style="color: #555555;"># ... with 4,990 more rows</span>
 </code></pre>
 </div>
+</div>
+</section>
+<section id="histogram-for-bootstrapped-widehatbeta_1" class="slide level2">
+<h2>Histogram for bootstrapped <span class="math inline">\widehat{\beta}_{1}</span></h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Code</a></li><li><a href="#tabset-1-2">Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ggplot</span>(para_boot_coefs, <span class="fu">aes</span>(<span class="at">x=</span>Trt)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb18-3"><a href="#cb18-3"></a>    <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">after_stat</span>(density)), </span>
+<span id="cb18-4"><a href="#cb18-4"></a>    <span class="at">colour=</span><span class="st">"#56B4E9"</span>, <span class="at">fill=</span><span class="st">"#0072B2"</span>, <span class="at">alpha=</span><span class="fl">0.7</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="overlay-a-predicted-density" class="slide level2">
+<h2>Overlay a predicted density</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Code</a></li><li><a href="#tabset-2-2">Plot</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>mean_para_boot_beta1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(para_boot_coefs<span class="sc">$</span>Trt)</span>
+<span id="cb19-2"><a href="#cb19-2"></a>sd_para_boot_beta1 <span class="ot">&lt;-</span> <span class="fu">sd</span>(para_boot_coefs<span class="sc">$</span>Trt)</span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="fu">ggplot</span>(para_boot_coefs, <span class="fu">aes</span>(<span class="at">x=</span>Trt)) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb19-6"><a href="#cb19-6"></a>    <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">after_stat</span>(density)),</span>
+<span id="cb19-7"><a href="#cb19-7"></a>    <span class="at">colour=</span><span class="st">"#56B4E9"</span>, <span class="at">fill=</span><span class="st">"#0072B2"</span>, <span class="at">alpha=</span><span class="fl">0.7</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a>  <span class="fu">geom_function</span>(</span>
+<span id="cb19-10"><a href="#cb19-10"></a>    <span class="at">fun=</span>dnorm, <span class="at">args=</span><span class="fu">list</span>(<span class="at">mean=</span>mean_para_boot_beta1, <span class="at">sd=</span>sd_para_boot_beta1),</span>
+<span id="cb19-11"><a href="#cb19-11"></a>    <span class="at">colour=</span><span class="st">"#D55E00"</span>, <span class="at">size=</span><span class="fl">1.2</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.svg" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="compute-confidence-intervals-for-beta_1" class="slide level2">
+<h2>Compute confidence intervals for <span class="math inline">\beta_{1}</span></h2>
+<p>Using 95% confidence level.</p>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Code</a></li><li><a href="#tabset-3-2">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">list</span>(</span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="at">boot_norm =</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-3"><a href="#cb20-3"></a>    <span class="at">lwr =</span> mean_para_boot_beta1 <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> sd_para_boot_beta1,</span>
+<span id="cb20-4"><a href="#cb20-4"></a>    <span class="at">upr =</span> mean_para_boot_beta1 <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> sd_para_boot_beta1</span>
+<span id="cb20-5"><a href="#cb20-5"></a>  ),</span>
+<span id="cb20-6"><a href="#cb20-6"></a>  </span>
+<span id="cb20-7"><a href="#cb20-7"></a>  <span class="at">boot_perc =</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-8"><a href="#cb20-8"></a>    <span class="at">lwr =</span> <span class="fu">quantile</span>(para_boot_coefs<span class="sc">$</span>Trt, <span class="fl">0.025</span>),</span>
+<span id="cb20-9"><a href="#cb20-9"></a>    <span class="at">upr =</span> <span class="fu">quantile</span>(para_boot_coefs<span class="sc">$</span>Trt, <span class="fl">0.975</span>)</span>
+<span id="cb20-10"><a href="#cb20-10"></a>  ),</span>
+<span id="cb20-11"><a href="#cb20-11"></a>  </span>
+<span id="cb20-12"><a href="#cb20-12"></a>  <span class="at">wald =</span> model <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13"></a>    <span class="fu">confint.default</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14"></a>    <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-15"><a href="#cb20-15"></a>    <span class="fu">slice</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-16"><a href="#cb20-16"></a>    <span class="fu">rename</span>(<span class="at">lwr=</span><span class="dv">1</span>, <span class="at">upr=</span><span class="dv">2</span>)</span>
+<span id="cb20-17"><a href="#cb20-17"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell" data-layout-align="center">
+<pre class="fansi fansi-output"><code>$boot_norm
+<span style="color: #555555;"># A tibble: 1 x 2</span>
+     lwr    upr
+   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.708</span> -<span style="color: #BB0000;">0.346</span>
+
+$boot_perc
+<span style="color: #555555;"># A tibble: 1 x 2</span>
+     lwr    upr
+   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.709</span> -<span style="color: #BB0000;">0.344</span>
+
+$wald
+<span style="color: #555555;"># A tibble: 1 x 2</span>
+     lwr    upr
+   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.706</span> -<span style="color: #BB0000;">0.349</span>
+</code></pre>
+</div>
+</div>
+</div>
+</div>
 <div class="footer footer-default">
 
-</div>
 </div>
 </section>
     </div>

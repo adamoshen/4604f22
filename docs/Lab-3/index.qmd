@@ -346,7 +346,7 @@ We coerce our results into a nice tibble before returning it.
 ```{r, cache=TRUE}
 set.seed(99)
 
-para_boot_coefs <- para_bootstrap_poisson(migraine, model, n=10000)
+para_boot_coefs <- para_bootstrap_poisson(migraine, model, n=5000)
 ```
 
 ```{r, eval=FALSE, include=FALSE}
@@ -378,7 +378,7 @@ ggplot(para_boot_coefs, aes(x=Trt)) +
 ### Plot
 
 ```{r, echo=FALSE}
-ggplot(boot_coefs, aes(x=Trt)) +
+ggplot(para_boot_coefs, aes(x=Trt)) +
   geom_histogram(
     aes(y=after_stat(density)),
     colour="#56B4E9", fill="#0072B2", alpha=0.7
