@@ -197,7 +197,7 @@ $$\log{(\widehat{\mu}_{i})} \,=\, \widehat{\beta}_{0} \,+\, \widehat{\beta}_{1}x
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -212,7 +212,7 @@ covariates in our original model. We will coerce this matrix to a tibble at the 
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -229,7 +229,7 @@ recalculated repeatedly.
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -248,7 +248,7 @@ We will use a `for` loop since we know exactly how many times to repeat the proc
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -269,7 +269,7 @@ existing values of `N` with our newly generated values of `N`.
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -293,7 +293,7 @@ that we want to update the fit of our original model by updating the data used t
 
 ```{r, eval=FALSE}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
@@ -318,7 +318,7 @@ We update the `iter`th row of the matrix that stores our parameter estimates.
 
 ```{r}
 para_bootstrap_poisson <- function(original_data, original_model, n) {
-  out <- out <- matrix(
+  out <- matrix(
     nrow=n, ncol=length(coef(original_model)),
     dimnames=list(NULL, names(coef(original_model)))
   )
