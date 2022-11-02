@@ -443,6 +443,9 @@ parametric distribution.
 
 See Week 6 lecture notes for steps.
 
+Alternatively, see page 229 of [Statistical Computing with R](https://englianhu.files.wordpress.com/2020/10/statistical-computer-with-r-2nd-edition.pdf)
+for steps that (in my opinion) are a bit clearer.
+
 Things are going to get messy...
 
 ## Build a function for bootstrap-t CI {auto-animate=true}
