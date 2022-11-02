@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.1.251">
 
   <meta name="author" content="Adam Shen">
-  <meta name="dcterms.date" content="2022-10-19">
-  <title>Stat 4604: Lab 3</title>
+  <meta name="dcterms.date" content="2022-11-02">
+  <title>Stat 4604: Lab 4</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -404,9 +404,9 @@
     <div class="slides">
 
 <section id="title-slide" class="center">
-  <h1 class="title">Stat 4604: Lab 3</h1>
+  <h1 class="title">Stat 4604: Lab 4</h1>
   <p class="author">Adam Shen</p>
-  <p class="date">October 19, 2022</p>
+  <p class="date">November 2, 2022</p>
 </section>
 
 <section id="slide-navigation" class="slide level2">
@@ -526,7 +526,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </ul>
 </div>
 <div class="fragment">
-<p>Task: create a function that performs the parametric bootstrap and returns the parameter estimates from each re-fitting.</p>
+<p>Task: create a function that performs the non-parametric bootstrap and returns the parameter estimates from each re-fitting.</p>
 </div>
 </section>
 <section id="yourself-before-you-yourself" class="slide level2">
@@ -698,16 +698,17 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </section>
 <section id="test-our-function" class="slide level2">
 <h2>Test our function</h2>
-<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-13_6b13d930852aede27e4d14aae83c0e6a">
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-13_0fa118e2c690422eb2b06f88315fbbad">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a>boot_coefs <span class="ot">&lt;-</span> <span class="fu">bootstrap_glm</span>(migraine, model, <span class="at">n=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3"></a>boot_coefs <span class="ot">&lt;-</span> <span class="fu">bootstrap_glm</span>(migraine, model, <span class="at">n=</span><span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This took about 25 seconds to complete. You may wish to decrease <code>n</code> if it is taking too long.</p>
+<p>
+</p>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>boot_coefs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 10,000 x 3</span>
+<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 5,000 x 3</span>
    `(Intercept)`    Trt   sBMI
            <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
 <span style="color: #555555;"> 1</span>          2.23 -<span style="color: #BB0000;">0.205</span> 0.219 
@@ -720,7 +721,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <span style="color: #555555;"> 8</span>          2.64 -<span style="color: #BB0000;">0.752</span> 0.146 
 <span style="color: #555555;"> 9</span>          2.59 -<span style="color: #BB0000;">1.03</span>  0.211 
 <span style="color: #555555;">10</span>          2.56 -<span style="color: #BB0000;">0.624</span> 0.202 
-<span style="color: #555555;"># ... with 9,990 more rows</span>
+<span style="color: #555555;"># ... with 4,990 more rows</span>
 </code></pre>
 </div>
 </div>
@@ -749,6 +750,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </div>
 </div>
 </div>
+<p>Question: Is <span class="math inline">B = 5000</span> sufficient?</p>
 </div>
 </div>
 </div>
@@ -788,55 +790,482 @@ Number of Fisher Scoring iterations: 5</code></pre>
 </div>
 </div>
 </section>
-<section id="compute-confidence-intervals-for-beta_1" class="slide level2">
-<h2>Compute confidence intervals for <span class="math inline">\beta_{1}</span></h2>
-<p>Using 95% confidence level.</p>
+<section id="reload-results-from-the-parametric-bootstrap" class="slide level2">
+<h2>Reload results from the parametric bootstrap</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>para_boot_coefs <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"./data/para_boot_coefs.rds"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a>para_boot_coefs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 5,000 x 3</span>
+   `(Intercept)`    Trt   sBMI
+           <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;"> 1</span>          2.50 -<span style="color: #BB0000;">0.478</span> 0.170 
+<span style="color: #555555;"> 2</span>          2.51 -<span style="color: #BB0000;">0.419</span> 0.096<span style="text-decoration: underline;">1</span>
+<span style="color: #555555;"> 3</span>          2.64 -<span style="color: #BB0000;">0.746</span> 0.126 
+<span style="color: #555555;"> 4</span>          2.63 -<span style="color: #BB0000;">0.564</span> 0.160 
+<span style="color: #555555;"> 5</span>          2.55 -<span style="color: #BB0000;">0.725</span> 0.056<span style="text-decoration: underline;">4</span>
+<span style="color: #555555;"> 6</span>          2.56 -<span style="color: #BB0000;">0.540</span> 0.081<span style="text-decoration: underline;">7</span>
+<span style="color: #555555;"> 7</span>          2.62 -<span style="color: #BB0000;">0.484</span> 0.084<span style="text-decoration: underline;">4</span>
+<span style="color: #555555;"> 8</span>          2.53 -<span style="color: #BB0000;">0.365</span> 0.122 
+<span style="color: #555555;"> 9</span>          2.43 -<span style="color: #BB0000;">0.307</span> 0.120 
+<span style="color: #555555;">10</span>          2.54 -<span style="color: #BB0000;">0.574</span> 0.183 
+<span style="color: #555555;"># ... with 4,990 more rows</span>
+</code></pre>
+</div>
+</section>
+<section id="bind-the-data-sets-together-with-an-identifier" class="slide level2">
+<h2>Bind the data sets together with an identifier</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>boot_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="at">parametric =</span> para_boot_coefs,</span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="at">nonparametric =</span> boot_coefs,</span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="at">.id =</span> <span class="st">"method"</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>
+</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>boot_results[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 5 x 4</span>
+  method     `(Intercept)`    Trt   sBMI
+  <span style="color: #555555; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;">1</span> parametric          2.50 -<span style="color: #BB0000;">0.478</span> 0.170 
+<span style="color: #555555;">2</span> parametric          2.51 -<span style="color: #BB0000;">0.419</span> 0.096<span style="text-decoration: underline;">1</span>
+<span style="color: #555555;">3</span> parametric          2.64 -<span style="color: #BB0000;">0.746</span> 0.126 
+<span style="color: #555555;">4</span> parametric          2.63 -<span style="color: #BB0000;">0.564</span> 0.160 
+<span style="color: #555555;">5</span> parametric          2.55 -<span style="color: #BB0000;">0.725</span> 0.056<span style="text-decoration: underline;">4</span>
+</code></pre>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>boot_results[<span class="dv">5001</span><span class="sc">:</span><span class="dv">5006</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 6 x 4</span>
+  method        `(Intercept)`    Trt   sBMI
+  <span style="color: #555555; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #555555;">1</span> nonparametric          2.23 -<span style="color: #BB0000;">0.205</span> 0.219 
+<span style="color: #555555;">2</span> nonparametric          2.66 -<span style="color: #BB0000;">0.703</span> 0.184 
+<span style="color: #555555;">3</span> nonparametric          2.83 -<span style="color: #BB0000;">0.885</span> 0.116 
+<span style="color: #555555;">4</span> nonparametric          2.41 -<span style="color: #BB0000;">0.292</span> 0.202 
+<span style="color: #555555;">5</span> nonparametric          2.38 -<span style="color: #BB0000;">0.356</span> 0.184 
+<span style="color: #555555;">6</span> nonparametric          2.65 -<span style="color: #BB0000;">0.586</span> 0.092<span style="text-decoration: underline;">7</span>
+</code></pre>
+</div>
+</section>
+<section id="compare-results" class="slide level2">
+<h2>Compare results</h2>
 <div class="panel-tabset">
-<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Code</a></li><li><a href="#tabset-3-2">Output</a></li></ul>
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Code</a></li><li><a href="#tabset-3-2">Plot</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">list</span>(</span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="at">boot_norm =</span> <span class="fu">tibble</span>(</span>
-<span id="cb17-3"><a href="#cb17-3"></a>    <span class="at">lwr =</span> mean_boot_beta1 <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> sd_boot_beta1,</span>
-<span id="cb17-4"><a href="#cb17-4"></a>    <span class="at">upr =</span> mean_boot_beta1 <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> sd_boot_beta1</span>
-<span id="cb17-5"><a href="#cb17-5"></a>  ),</span>
-<span id="cb17-6"><a href="#cb17-6"></a>  </span>
-<span id="cb17-7"><a href="#cb17-7"></a>  <span class="at">boot_perc =</span> <span class="fu">tibble</span>(</span>
-<span id="cb17-8"><a href="#cb17-8"></a>    <span class="at">lwr =</span> <span class="fu">quantile</span>(boot_coefs<span class="sc">$</span>Trt, <span class="fl">0.025</span>),</span>
-<span id="cb17-9"><a href="#cb17-9"></a>    <span class="at">upr =</span> <span class="fu">quantile</span>(boot_coefs<span class="sc">$</span>Trt, <span class="fl">0.975</span>)</span>
-<span id="cb17-10"><a href="#cb17-10"></a>  ),</span>
-<span id="cb17-11"><a href="#cb17-11"></a>  </span>
-<span id="cb17-12"><a href="#cb17-12"></a>  <span class="at">wald =</span> model <span class="sc">%&gt;%</span></span>
-<span id="cb17-13"><a href="#cb17-13"></a>    <span class="fu">confint.default</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb17-14"><a href="#cb17-14"></a>    <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb17-15"><a href="#cb17-15"></a>    <span class="fu">slice</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-16"><a href="#cb17-16"></a>    <span class="fu">rename</span>(<span class="at">lwr=</span><span class="dv">1</span>, <span class="at">upr=</span><span class="dv">2</span>)</span>
-<span id="cb17-17"><a href="#cb17-17"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>boot_results, <span class="fu">aes</span>(<span class="at">x=</span>Trt, <span class="at">y=</span><span class="fu">after_stat</span>(density), <span class="at">colour=</span>method, <span class="at">fill=</span>method)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">geom_histogram</span>(<span class="at">alpha=</span><span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#56B4E9"</span>, <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-3-2">
 <div class="cell" data-layout-align="center">
-<pre class="fansi fansi-output"><code>$boot_norm
-<span style="color: #555555;"># A tibble: 1 x 2</span>
-     lwr    upr
-   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.894</span> -<span style="color: #BB0000;">0.159</span>
-
-$boot_perc
-<span style="color: #555555;"># A tibble: 1 x 2</span>
-     lwr    upr
-   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.886</span> -<span style="color: #BB0000;">0.158</span>
-
-$wald
-<span style="color: #555555;"># A tibble: 1 x 2</span>
-     lwr    upr
-   <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #555555;">1</span> -<span style="color: #BB0000;">0.706</span> -<span style="color: #BB0000;">0.349</span>
-</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.svg" width="960"></p>
+</figure>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="compare-results-1" class="slide level2">
+<h2>Compare results</h2>
+<p>What did we notice?</p>
+<ul>
+<li><p>For both methods, the centres of the distributions are very similar.</p></li>
+<li><p>The spread (variance) of the non-parametric distribution is much larger than that of the parametric distribution.</p></li>
+</ul>
+</section>
+<section id="bootstrap-t-ci" class="slide level2">
+<h2>Bootstrap-t CI</h2>
+<p>(Also known as the studentized bootstrap interval)</p>
+<p>See Week 6 lecture notes for steps.</p>
+<p>Things are going to get messy...</p>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Code</a></li><li><a href="#tabset-4-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb22-1" class="hljs-ln-code"><a href="#cb22-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb22-2" class="hljs-ln-code"><a href="#cb22-2"></a></span>
+<span id="cb22-3" class="hljs-ln-code"><a href="#cb22-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-4-2">
+<ul>
+<li><p>We will need our original data for resampling and our original model to use as a template.</p></li>
+<li><p><code>B</code> is the number of bootstrap resamples, <code>R</code> is the number of bootstrap-within-bootstrap resamples (used to calculate the bootstrap standard error of the <span class="math inline">b</span>th bootstrap estimate of <span class="math inline">\widehat{\beta}_{1}</span>)</p></li>
+<li><p><code>level=0.95</code>: by default, the function will compute a 95% CI</p></li>
+<li><p><code>term=2</code>: when we call <code>coef</code> for any model, <span class="math inline">\widehat{\beta}_{1}</span> is the second term</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-1" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Code</a></li><li><a href="#tabset-5-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb23-1" class="hljs-ln-code"><a href="#cb23-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb23-2" class="hljs-ln-code"><a href="#cb23-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb23-3" class="hljs-ln-code"><a href="#cb23-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb23-4" class="hljs-ln-code"><a href="#cb23-4"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-5-2">
+<p>Initialising our constants:</p>
+<ul>
+<li><p><code>boot_estimates</code> will keep track of the <span class="math inline">\widehat{\beta}_{1}</span>s from each refitted model.</p></li>
+<li><p><code>boot_se</code> will keep track of the bootstrap standard error estimates for the <span class="math inline">b</span>th bootstrap sample.</p></li>
+<li><p>For effective memory consumption, we initialize <code>boot_estimates</code> as a vector of zeroes with length <code>B</code>. As we progress through our main loop, we will replace these placeholder zeroes with the required values.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-2" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Code</a></li><li><a href="#tabset-6-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a href="#cb24-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb24-2" class="hljs-ln-code"><a href="#cb24-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb24-3" class="hljs-ln-code"><a href="#cb24-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb24-4" class="hljs-ln-code"><a href="#cb24-4"></a>  </span>
+<span id="cb24-5" class="hljs-ln-code"><a href="#cb24-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb24-6" class="hljs-ln-code"><a href="#cb24-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb24-7" class="hljs-ln-code"><a href="#cb24-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb24-8" class="hljs-ln-code"><a href="#cb24-8"></a>    </span>
+<span id="cb24-9" class="hljs-ln-code"><a href="#cb24-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb24-10" class="hljs-ln-code"><a href="#cb24-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb24-11" class="hljs-ln-code"><a href="#cb24-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-12" class="hljs-ln-code"><a href="#cb24-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb24-13" class="hljs-ln-code"><a href="#cb24-13"></a>  }</span>
+<span id="cb24-14" class="hljs-ln-code"><a href="#cb24-14"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-6-2">
+<ul>
+<li><p>We create a resampled data set as usual.</p></li>
+<li><p>This time, we are only after a particular term of a model, rather than all the terms. After the model is refitted, it is passed to <code>coef</code> to obtain the coefficients, and then passed to <code>pluck</code> to extract the <code>term</code> (in this case, second) coefficient.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-3" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-7" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-7-1">Code</a></li><li><a href="#tabset-7-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a href="#cb25-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb25-2" class="hljs-ln-code"><a href="#cb25-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb25-3" class="hljs-ln-code"><a href="#cb25-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb25-4" class="hljs-ln-code"><a href="#cb25-4"></a>  </span>
+<span id="cb25-5" class="hljs-ln-code"><a href="#cb25-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb25-6" class="hljs-ln-code"><a href="#cb25-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb25-7" class="hljs-ln-code"><a href="#cb25-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb25-8" class="hljs-ln-code"><a href="#cb25-8"></a>    </span>
+<span id="cb25-9" class="hljs-ln-code"><a href="#cb25-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb25-10" class="hljs-ln-code"><a href="#cb25-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb25-11" class="hljs-ln-code"><a href="#cb25-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-12" class="hljs-ln-code"><a href="#cb25-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb25-13" class="hljs-ln-code"><a href="#cb25-13"></a>    </span>
+<span id="cb25-14" class="hljs-ln-code"><a href="#cb25-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb25-15" class="hljs-ln-code"><a href="#cb25-15"></a>    </span>
+<span id="cb25-16" class="hljs-ln-code"><a href="#cb25-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb25-17" class="hljs-ln-code"><a href="#cb25-17"></a></span>
+<span id="cb25-18" class="hljs-ln-code"><a href="#cb25-18"></a>    }</span>
+<span id="cb25-19" class="hljs-ln-code"><a href="#cb25-19"></a>  }</span>
+<span id="cb25-20" class="hljs-ln-code"><a href="#cb25-20"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-7-2">
+<ul>
+<li><p>We initialise a <code>boot_vals</code> to keep track of the estimates that we will receive from the bootstrap-within-bootstrap procedure.</p></li>
+<li><p>This will be used later to calculate the bootstrap standard error for the <span class="math inline">b</span>th bootstrap sample.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-4" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-8" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-8-1">Code</a></li><li><a href="#tabset-8-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb26-1" class="hljs-ln-code"><a href="#cb26-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb26-2" class="hljs-ln-code"><a href="#cb26-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb26-3" class="hljs-ln-code"><a href="#cb26-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb26-4" class="hljs-ln-code"><a href="#cb26-4"></a>  </span>
+<span id="cb26-5" class="hljs-ln-code"><a href="#cb26-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb26-6" class="hljs-ln-code"><a href="#cb26-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb26-7" class="hljs-ln-code"><a href="#cb26-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb26-8" class="hljs-ln-code"><a href="#cb26-8"></a>    </span>
+<span id="cb26-9" class="hljs-ln-code"><a href="#cb26-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb26-10" class="hljs-ln-code"><a href="#cb26-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb26-11" class="hljs-ln-code"><a href="#cb26-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-12" class="hljs-ln-code"><a href="#cb26-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb26-13" class="hljs-ln-code"><a href="#cb26-13"></a>    </span>
+<span id="cb26-14" class="hljs-ln-code"><a href="#cb26-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb26-15" class="hljs-ln-code"><a href="#cb26-15"></a>    </span>
+<span id="cb26-16" class="hljs-ln-code"><a href="#cb26-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb26-17" class="hljs-ln-code"><a href="#cb26-17"></a>      re_resampled_data <span class="ot">&lt;-</span> resampled_data <span class="sc">%&gt;%</span></span>
+<span id="cb26-18" class="hljs-ln-code"><a href="#cb26-18"></a>        <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb26-19" class="hljs-ln-code"><a href="#cb26-19"></a>      </span>
+<span id="cb26-20" class="hljs-ln-code"><a href="#cb26-20"></a>      boot_vals[r] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb26-21" class="hljs-ln-code"><a href="#cb26-21"></a>        <span class="fu">update</span>(<span class="at">data=</span>re_resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb26-22" class="hljs-ln-code"><a href="#cb26-22"></a>        <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-23" class="hljs-ln-code"><a href="#cb26-23"></a>        <span class="fu">pluck</span>(term)</span>
+<span id="cb26-24" class="hljs-ln-code"><a href="#cb26-24"></a>    }</span>
+<span id="cb26-25" class="hljs-ln-code"><a href="#cb26-25"></a>  }</span>
+<span id="cb26-26" class="hljs-ln-code"><a href="#cb26-26"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-8-2">
+<ul>
+<li><p>We resample from the resampled data.</p></li>
+<li><p>We then fit a new model on the re-resampled data and extract the value of <span class="math inline">\widehat{\beta}_{1}</span>.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-5" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-9" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-9-1">Code</a></li><li><a href="#tabset-9-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb27-1" class="hljs-ln-code"><a href="#cb27-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb27-2" class="hljs-ln-code"><a href="#cb27-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb27-3" class="hljs-ln-code"><a href="#cb27-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb27-4" class="hljs-ln-code"><a href="#cb27-4"></a>  </span>
+<span id="cb27-5" class="hljs-ln-code"><a href="#cb27-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb27-6" class="hljs-ln-code"><a href="#cb27-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb27-7" class="hljs-ln-code"><a href="#cb27-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-8" class="hljs-ln-code"><a href="#cb27-8"></a>    </span>
+<span id="cb27-9" class="hljs-ln-code"><a href="#cb27-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb27-10" class="hljs-ln-code"><a href="#cb27-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb27-11" class="hljs-ln-code"><a href="#cb27-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-12" class="hljs-ln-code"><a href="#cb27-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb27-13" class="hljs-ln-code"><a href="#cb27-13"></a>    </span>
+<span id="cb27-14" class="hljs-ln-code"><a href="#cb27-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb27-15" class="hljs-ln-code"><a href="#cb27-15"></a>    </span>
+<span id="cb27-16" class="hljs-ln-code"><a href="#cb27-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb27-17" class="hljs-ln-code"><a href="#cb27-17"></a>      re_resampled_data <span class="ot">&lt;-</span> resampled_data <span class="sc">%&gt;%</span></span>
+<span id="cb27-18" class="hljs-ln-code"><a href="#cb27-18"></a>        <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-19" class="hljs-ln-code"><a href="#cb27-19"></a>      </span>
+<span id="cb27-20" class="hljs-ln-code"><a href="#cb27-20"></a>      boot_vals[r] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb27-21" class="hljs-ln-code"><a href="#cb27-21"></a>        <span class="fu">update</span>(<span class="at">data=</span>re_resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb27-22" class="hljs-ln-code"><a href="#cb27-22"></a>        <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-23" class="hljs-ln-code"><a href="#cb27-23"></a>        <span class="fu">pluck</span>(term)</span>
+<span id="cb27-24" class="hljs-ln-code"><a href="#cb27-24"></a>    }</span>
+<span id="cb27-25" class="hljs-ln-code"><a href="#cb27-25"></a>    </span>
+<span id="cb27-26" class="hljs-ln-code"><a href="#cb27-26"></a>    boot_se[b] <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_vals)</span>
+<span id="cb27-27" class="hljs-ln-code"><a href="#cb27-27"></a>  }</span>
+<span id="cb27-28" class="hljs-ln-code"><a href="#cb27-28"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-9-2">
+<ul>
+<li>Once we have exited the bootstrap-within-bootstrap loop, we can update the bootstrap standard error of the <span class="math inline">b</span>th resample.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-6" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-10" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-10-1">Code</a></li><li><a href="#tabset-10-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb28-1" class="hljs-ln-code"><a href="#cb28-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb28-2" class="hljs-ln-code"><a href="#cb28-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb28-3" class="hljs-ln-code"><a href="#cb28-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb28-4" class="hljs-ln-code"><a href="#cb28-4"></a>  </span>
+<span id="cb28-5" class="hljs-ln-code"><a href="#cb28-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb28-6" class="hljs-ln-code"><a href="#cb28-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb28-7" class="hljs-ln-code"><a href="#cb28-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb28-8" class="hljs-ln-code"><a href="#cb28-8"></a>    </span>
+<span id="cb28-9" class="hljs-ln-code"><a href="#cb28-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb28-10" class="hljs-ln-code"><a href="#cb28-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb28-11" class="hljs-ln-code"><a href="#cb28-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-12" class="hljs-ln-code"><a href="#cb28-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb28-13" class="hljs-ln-code"><a href="#cb28-13"></a>    </span>
+<span id="cb28-14" class="hljs-ln-code"><a href="#cb28-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb28-15" class="hljs-ln-code"><a href="#cb28-15"></a>    </span>
+<span id="cb28-16" class="hljs-ln-code"><a href="#cb28-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb28-17" class="hljs-ln-code"><a href="#cb28-17"></a>      re_resampled_data <span class="ot">&lt;-</span> resampled_data <span class="sc">%&gt;%</span></span>
+<span id="cb28-18" class="hljs-ln-code"><a href="#cb28-18"></a>        <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb28-19" class="hljs-ln-code"><a href="#cb28-19"></a>      </span>
+<span id="cb28-20" class="hljs-ln-code"><a href="#cb28-20"></a>      boot_vals[r] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb28-21" class="hljs-ln-code"><a href="#cb28-21"></a>        <span class="fu">update</span>(<span class="at">data=</span>re_resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb28-22" class="hljs-ln-code"><a href="#cb28-22"></a>        <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-23" class="hljs-ln-code"><a href="#cb28-23"></a>        <span class="fu">pluck</span>(term)</span>
+<span id="cb28-24" class="hljs-ln-code"><a href="#cb28-24"></a>    }</span>
+<span id="cb28-25" class="hljs-ln-code"><a href="#cb28-25"></a>    </span>
+<span id="cb28-26" class="hljs-ln-code"><a href="#cb28-26"></a>    boot_se[b] <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_vals)</span>
+<span id="cb28-27" class="hljs-ln-code"><a href="#cb28-27"></a>  }</span>
+<span id="cb28-28" class="hljs-ln-code"><a href="#cb28-28"></a>  </span>
+<span id="cb28-29" class="hljs-ln-code"><a href="#cb28-29"></a>  z <span class="ot">&lt;-</span> (boot_estimates <span class="sc">-</span> original_estimate) <span class="sc">/</span> boot_se</span>
+<span id="cb28-30" class="hljs-ln-code"><a href="#cb28-30"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-10-2">
+<ul>
+<li>We compute all of the required <span class="math inline">z^{(b)}</span> values by taking advantage of the fact that operations such as subtraction and division are vectorized.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-7" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-11" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-11-1">Code</a></li><li><a href="#tabset-11-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb29-1" class="hljs-ln-code"><a href="#cb29-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb29-2" class="hljs-ln-code"><a href="#cb29-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb29-3" class="hljs-ln-code"><a href="#cb29-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb29-4" class="hljs-ln-code"><a href="#cb29-4"></a>  </span>
+<span id="cb29-5" class="hljs-ln-code"><a href="#cb29-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb29-6" class="hljs-ln-code"><a href="#cb29-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb29-7" class="hljs-ln-code"><a href="#cb29-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-8" class="hljs-ln-code"><a href="#cb29-8"></a>    </span>
+<span id="cb29-9" class="hljs-ln-code"><a href="#cb29-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb29-10" class="hljs-ln-code"><a href="#cb29-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb29-11" class="hljs-ln-code"><a href="#cb29-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-12" class="hljs-ln-code"><a href="#cb29-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb29-13" class="hljs-ln-code"><a href="#cb29-13"></a>    </span>
+<span id="cb29-14" class="hljs-ln-code"><a href="#cb29-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb29-15" class="hljs-ln-code"><a href="#cb29-15"></a>    </span>
+<span id="cb29-16" class="hljs-ln-code"><a href="#cb29-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb29-17" class="hljs-ln-code"><a href="#cb29-17"></a>      re_resampled_data <span class="ot">&lt;-</span> resampled_data <span class="sc">%&gt;%</span></span>
+<span id="cb29-18" class="hljs-ln-code"><a href="#cb29-18"></a>        <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-19" class="hljs-ln-code"><a href="#cb29-19"></a>      </span>
+<span id="cb29-20" class="hljs-ln-code"><a href="#cb29-20"></a>      boot_vals[r] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb29-21" class="hljs-ln-code"><a href="#cb29-21"></a>        <span class="fu">update</span>(<span class="at">data=</span>re_resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb29-22" class="hljs-ln-code"><a href="#cb29-22"></a>        <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-23" class="hljs-ln-code"><a href="#cb29-23"></a>        <span class="fu">pluck</span>(term)</span>
+<span id="cb29-24" class="hljs-ln-code"><a href="#cb29-24"></a>    }</span>
+<span id="cb29-25" class="hljs-ln-code"><a href="#cb29-25"></a>    </span>
+<span id="cb29-26" class="hljs-ln-code"><a href="#cb29-26"></a>    boot_se[b] <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_vals)</span>
+<span id="cb29-27" class="hljs-ln-code"><a href="#cb29-27"></a>  }</span>
+<span id="cb29-28" class="hljs-ln-code"><a href="#cb29-28"></a>  </span>
+<span id="cb29-29" class="hljs-ln-code"><a href="#cb29-29"></a>  z <span class="ot">&lt;-</span> (boot_estimates <span class="sc">-</span> original_estimate) <span class="sc">/</span> boot_se</span>
+<span id="cb29-30" class="hljs-ln-code"><a href="#cb29-30"></a></span>
+<span id="cb29-31" class="hljs-ln-code"><a href="#cb29-31"></a>  alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> level</span>
+<span id="cb29-32" class="hljs-ln-code"><a href="#cb29-32"></a>  q <span class="ot">&lt;-</span> <span class="fu">quantile</span>(z, <span class="at">probs=</span><span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>), <span class="at">names=</span><span class="cn">FALSE</span>)</span>
+<span id="cb29-33" class="hljs-ln-code"><a href="#cb29-33"></a>  </span>
+<span id="cb29-34" class="hljs-ln-code"><a href="#cb29-34"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-11-2">
+<ul>
+<li>We now calculate the <span class="math inline">\frac{\alpha}{2}</span> and <span class="math inline">1 \,-\, \frac{\alpha}{2}</span> percentiles of <span class="math inline">z^{(b)}</span>, giving us <span class="math inline">q_{L}</span> and <span class="math inline">q_{U}</span>, respectively.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-function-for-bootstrap-t-ci-8" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Build a function for bootstrap-t CI</h2>
+<div class="panel-tabset">
+<ul id="tabset-12" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-12-1">Code</a></li><li><a href="#tabset-12-2">Details</a></li></ul>
+<div class="tab-content">
+<div id="tabset-12-1">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb30-1" class="hljs-ln-code"><a href="#cb30-1"></a>boot_t_ci_glm <span class="ot">&lt;-</span> <span class="cf">function</span>(original_data, original_model, <span class="at">B=</span><span class="dv">500</span>, <span class="at">R=</span><span class="dv">100</span>, <span class="at">level=</span><span class="fl">0.95</span>, <span class="at">term=</span><span class="dv">2</span>) {</span>
+<span id="cb30-2" class="hljs-ln-code"><a href="#cb30-2"></a>  boot_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb30-3" class="hljs-ln-code"><a href="#cb30-3"></a>  boot_se <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb30-4" class="hljs-ln-code"><a href="#cb30-4"></a>  </span>
+<span id="cb30-5" class="hljs-ln-code"><a href="#cb30-5"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb30-6" class="hljs-ln-code"><a href="#cb30-6"></a>    resampled_data <span class="ot">&lt;-</span> original_data <span class="sc">%&gt;%</span></span>
+<span id="cb30-7" class="hljs-ln-code"><a href="#cb30-7"></a>      <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb30-8" class="hljs-ln-code"><a href="#cb30-8"></a>    </span>
+<span id="cb30-9" class="hljs-ln-code"><a href="#cb30-9"></a>    boot_estimates[b] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb30-10" class="hljs-ln-code"><a href="#cb30-10"></a>      <span class="fu">update</span>(<span class="at">data=</span>resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb30-11" class="hljs-ln-code"><a href="#cb30-11"></a>      <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-12" class="hljs-ln-code"><a href="#cb30-12"></a>      <span class="fu">pluck</span>(term)</span>
+<span id="cb30-13" class="hljs-ln-code"><a href="#cb30-13"></a>    </span>
+<span id="cb30-14" class="hljs-ln-code"><a href="#cb30-14"></a>    boot_vals <span class="ot">&lt;-</span> <span class="fu">numeric</span>(R)</span>
+<span id="cb30-15" class="hljs-ln-code"><a href="#cb30-15"></a>    </span>
+<span id="cb30-16" class="hljs-ln-code"><a href="#cb30-16"></a>    <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R) {</span>
+<span id="cb30-17" class="hljs-ln-code"><a href="#cb30-17"></a>      re_resampled_data <span class="ot">&lt;-</span> resampled_data <span class="sc">%&gt;%</span></span>
+<span id="cb30-18" class="hljs-ln-code"><a href="#cb30-18"></a>        <span class="fu">slice_sample</span>(<span class="at">n=</span><span class="fu">nrow</span>(original_data), <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb30-19" class="hljs-ln-code"><a href="#cb30-19"></a>      </span>
+<span id="cb30-20" class="hljs-ln-code"><a href="#cb30-20"></a>      boot_vals[r] <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb30-21" class="hljs-ln-code"><a href="#cb30-21"></a>        <span class="fu">update</span>(<span class="at">data=</span>re_resampled_data) <span class="sc">%&gt;%</span></span>
+<span id="cb30-22" class="hljs-ln-code"><a href="#cb30-22"></a>        <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-23" class="hljs-ln-code"><a href="#cb30-23"></a>        <span class="fu">pluck</span>(term)</span>
+<span id="cb30-24" class="hljs-ln-code"><a href="#cb30-24"></a>    }</span>
+<span id="cb30-25" class="hljs-ln-code"><a href="#cb30-25"></a>    </span>
+<span id="cb30-26" class="hljs-ln-code"><a href="#cb30-26"></a>    boot_se[b] <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_vals)</span>
+<span id="cb30-27" class="hljs-ln-code"><a href="#cb30-27"></a>  }</span>
+<span id="cb30-28" class="hljs-ln-code"><a href="#cb30-28"></a>  </span>
+<span id="cb30-29" class="hljs-ln-code"><a href="#cb30-29"></a>  z <span class="ot">&lt;-</span> (boot_estimates <span class="sc">-</span> original_estimate) <span class="sc">/</span> boot_se</span>
+<span id="cb30-30" class="hljs-ln-code"><a href="#cb30-30"></a></span>
+<span id="cb30-31" class="hljs-ln-code"><a href="#cb30-31"></a>  alpha <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> level</span>
+<span id="cb30-32" class="hljs-ln-code"><a href="#cb30-32"></a>  q <span class="ot">&lt;-</span> <span class="fu">quantile</span>(z, <span class="at">probs=</span><span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>), <span class="at">names=</span><span class="cn">FALSE</span>)</span>
+<span id="cb30-33" class="hljs-ln-code"><a href="#cb30-33"></a>  </span>
+<span id="cb30-34" class="hljs-ln-code"><a href="#cb30-34"></a>  original_estimate <span class="ot">&lt;-</span> original_model <span class="sc">%&gt;%</span></span>
+<span id="cb30-35" class="hljs-ln-code"><a href="#cb30-35"></a>    <span class="fu">coef</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-36" class="hljs-ln-code"><a href="#cb30-36"></a>    <span class="fu">pluck</span>(term)</span>
+<span id="cb30-37" class="hljs-ln-code"><a href="#cb30-37"></a>  se_boot_estimates <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_estimates)</span>
+<span id="cb30-38" class="hljs-ln-code"><a href="#cb30-38"></a>  </span>
+<span id="cb30-39" class="hljs-ln-code"><a href="#cb30-39"></a>  (original_estimate <span class="sc">-</span> q <span class="sc">*</span> se_boot_estimates) <span class="sc">%&gt;%</span></span>
+<span id="cb30-40" class="hljs-ln-code"><a href="#cb30-40"></a>    <span class="fu">rev</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-41" class="hljs-ln-code"><a href="#cb30-41"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"lwr"</span> ,<span class="st">"upr"</span>))</span>
+<span id="cb30-42" class="hljs-ln-code"><a href="#cb30-42"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-12-2">
+<ul>
+<li><p><code>original_estimate</code> is the observed estimate, <span class="math inline">\widehat{\theta}</span>. In this case, we are extracting the value of <span class="math inline">\widehat{\beta}_{1}</span> from our original model.</p></li>
+<li><p><code>se_boot_estimates</code> is the standard error of all the bootstrapped estimates of <span class="math inline">\beta_{1}</span> (this is the quantity denoted <span class="math inline">\widehat{\text{se}}_{B}</span> in the Week 6 notes).</p></li>
+<li><p>Once again, we take advantage of the vectorization of operations such as subtraction and multiplication.</p></li>
+<li><p>These quantities are passed to <code>rev</code> (reverse) to reverse the order. Recall that the lower bound of the interval is computed using the upper quantile, and the upper bound is computed using the lower quantile!</p></li>
+<li><p>Finally, these values are passed to <code>set_names</code> to create a named vector, as is the convention with any confidence intervals in R.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-a-bootstrap-t-ci" class="slide level2">
+<h2>Calculate a bootstrap-t CI</h2>
+<p>Unsurprisingly, this will take a while to run. Adjust the values of <code>B</code> and <code>R</code> as needed. I will keep the defaults of <code>B=500</code> and <code>R=100</code>.</p>
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/unnamed-chunk-33_b49fb1642f2017a5eaec7fc359c0e76e">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">set.seed</span>(<span class="dv">120</span>)</span>
+<span id="cb31-2"><a href="#cb31-2"></a></span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="fu">boot_t_ci_glm</span>(migraine, model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       lwr        upr 
+-0.8988935 -0.1350479 </code></pre>
 </div>
 </div>
 <div class="footer footer-default">
