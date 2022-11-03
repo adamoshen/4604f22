@@ -931,7 +931,7 @@ Number of Fisher Scoring iterations: 5</code></pre>
 <ul>
 <li><p><code>boot_estimates</code> will keep track of the <span class="math inline">\widehat{\beta}_{1}</span>s from each refitted model.</p></li>
 <li><p><code>boot_se</code> will keep track of the bootstrap standard error estimates for the <span class="math inline">b</span>th bootstrap sample.</p></li>
-<li><p>For effective memory consumption, we initialize <code>boot_estimates</code> as a vector of zeroes with length <code>B</code>. As we progress through our main loop, we will replace these placeholder zeroes with the required values.</p></li>
+<li><p>For effective memory consumption, we initialize <code>boot_estimates</code> and <code>boot_se</code> as vectors of zeroes with pre-defined length <code>B</code>. As we progress through our main loop, we will replace these placeholder zeroes with the required values.</p></li>
 </ul>
 </div>
 </div>

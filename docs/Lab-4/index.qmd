@@ -497,9 +497,9 @@ Initialising our constants:
 - `boot_se` will keep track of the bootstrap standard error estimates for the $b$th bootstrap
 sample.
 
-- For effective memory consumption, we initialize `boot_estimates` as a vector of zeroes with length
-`B`. As we progress through our main loop, we will replace these placeholder zeroes with the
-required values.
+- For effective memory consumption, we initialize `boot_estimates` and `boot_se` as vectors of
+zeroes with pre-defined length `B`. As we progress through our main loop, we will replace these
+placeholder zeroes with the required values.
 
 :::
 
