@@ -400,8 +400,8 @@ boot_results <- bind_rows(
 <p></p>
 
 ```{r}
-boot_results[1:5, ]
-boot_results[5001:5006, ]
+slice(boot_results, 1:5)
+slice(boot_results, 5001:5006)
 ```
 
 ## Compare results
