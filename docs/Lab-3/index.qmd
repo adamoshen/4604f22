@@ -102,18 +102,17 @@ by sampling from some distribution where initial parameter estimates are taken t
 
 . . .
 
-- This newly simulated data is then used to fit a new model in order to obtain new parameter
-estimates
+- This newly simulated data is then used to obtain new parameter estimates
 
 . . .
 
-- Once we have resimulated our data and fit new models a sufficient number of times, we can
-aggregate all the parameter estimates and perform inference
+- Once we have resimulated our data and estimated our parameter of interest a sufficient number of
+times, we can aggregate all the parameter estimates and perform inference
 
 . . .
 
-Task: create a function that performs the parametric bootstrap and returns the parameter estimates
-from each re-fitting.
+Task: create a function that performs the parametric bootstrap for the coefficients of a Poisson
+GLM and returns the parameter estimates from each re-fitting.
 
 ## Procedure outline
 
