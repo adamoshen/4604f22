@@ -1,12 +1,9 @@
 newton <- function(f, df, x0, niter=200, epsilon) {
   fx0 <- f(x0)
-  xseq <- numeric(niter+1)
-  xseq[1] <- x0
 
   for (i in 1:niter) {
     dfx0 <- df(x0)
     xstar <- x0 - fx0 / dfx0
-    xseq[i+1] <- xstar
     fxstar <- f(xstar)
     err <- abs(fxstar)
 

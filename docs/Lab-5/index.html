@@ -554,147 +554,100 @@ $fxstar
 <section id="newtons-method" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Newton's method</h2>
 <p>From Brightspace, download the <code>newton.R</code> file.</p>
-<p>Just before the <code>for</code> loop, you will need to initialise <code>xseq</code>, otherwise the provided code will not work. We should also record <code>x0</code> as the first element of <code>xseq</code>.</p>
-<p>There are also two missing lines under the <code>dfx0</code> part.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="3-4,8-9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a href="#cb14-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, niter, epsilon) {</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a href="#cb14-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, niter, epsilon) {</span>
 <span id="cb14-2" class="hljs-ln-code"><a href="#cb14-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
-<span id="cb14-3" class="hljs-ln-code"><a href="#cb14-3"></a>  xseq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(niter)</span>
-<span id="cb14-4" class="hljs-ln-code"><a href="#cb14-4"></a>  xseq[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
-<span id="cb14-5" class="hljs-ln-code"><a href="#cb14-5"></a></span>
-<span id="cb14-6" class="hljs-ln-code"><a href="#cb14-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
-<span id="cb14-7" class="hljs-ln-code"><a href="#cb14-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
-<span id="cb14-8" class="hljs-ln-code"><a href="#cb14-8"></a>    <span class="do">## missing line</span></span>
-<span id="cb14-9" class="hljs-ln-code"><a href="#cb14-9"></a>    <span class="do">## missing line</span></span>
-<span id="cb14-10" class="hljs-ln-code"><a href="#cb14-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb14-11" class="hljs-ln-code"><a href="#cb14-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
-<span id="cb14-12" class="hljs-ln-code"><a href="#cb14-12"></a>    </span>
-<span id="cb14-13" class="hljs-ln-code"><a href="#cb14-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb14-14" class="hljs-ln-code"><a href="#cb14-14"></a>      <span class="cf">break</span></span>
-<span id="cb14-15" class="hljs-ln-code"><a href="#cb14-15"></a>    }</span>
+<span id="cb14-3" class="hljs-ln-code"><a href="#cb14-3"></a></span>
+<span id="cb14-4" class="hljs-ln-code"><a href="#cb14-4"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
+<span id="cb14-5" class="hljs-ln-code"><a href="#cb14-5"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
+<span id="cb14-6" class="hljs-ln-code"><a href="#cb14-6"></a>    <span class="do">## missing line</span></span>
+<span id="cb14-7" class="hljs-ln-code"><a href="#cb14-7"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb14-8" class="hljs-ln-code"><a href="#cb14-8"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
+<span id="cb14-9" class="hljs-ln-code"><a href="#cb14-9"></a>    </span>
+<span id="cb14-10" class="hljs-ln-code"><a href="#cb14-10"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
+<span id="cb14-11" class="hljs-ln-code"><a href="#cb14-11"></a>      <span class="cf">break</span></span>
+<span id="cb14-12" class="hljs-ln-code"><a href="#cb14-12"></a>    }</span>
+<span id="cb14-13" class="hljs-ln-code"><a href="#cb14-13"></a></span>
+<span id="cb14-14" class="hljs-ln-code"><a href="#cb14-14"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
+<span id="cb14-15" class="hljs-ln-code"><a href="#cb14-15"></a>    <span class="do">## missing line</span></span>
 <span id="cb14-16" class="hljs-ln-code"><a href="#cb14-16"></a></span>
-<span id="cb14-17" class="hljs-ln-code"><a href="#cb14-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
-<span id="cb14-18" class="hljs-ln-code"><a href="#cb14-18"></a>    <span class="do">## missing line</span></span>
-<span id="cb14-19" class="hljs-ln-code"><a href="#cb14-19"></a></span>
-<span id="cb14-20" class="hljs-ln-code"><a href="#cb14-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
-<span id="cb14-21" class="hljs-ln-code"><a href="#cb14-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
-<span id="cb14-22" class="hljs-ln-code"><a href="#cb14-22"></a>    }</span>
-<span id="cb14-23" class="hljs-ln-code"><a href="#cb14-23"></a>  }</span>
-<span id="cb14-24" class="hljs-ln-code"><a href="#cb14-24"></a></span>
-<span id="cb14-25" class="hljs-ln-code"><a href="#cb14-25"></a>  <span class="fu">list</span>(</span>
-<span id="cb14-26" class="hljs-ln-code"><a href="#cb14-26"></a>    <span class="at">xstar =</span> xstar,</span>
-<span id="cb14-27" class="hljs-ln-code"><a href="#cb14-27"></a>    <span class="at">err =</span> err,</span>
-<span id="cb14-28" class="hljs-ln-code"><a href="#cb14-28"></a>    <span class="at">fxstar =</span> fxstar</span>
-<span id="cb14-29" class="hljs-ln-code"><a href="#cb14-29"></a>  )</span>
-<span id="cb14-30" class="hljs-ln-code"><a href="#cb14-30"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-17" class="hljs-ln-code"><a href="#cb14-17"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
+<span id="cb14-18" class="hljs-ln-code"><a href="#cb14-18"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
+<span id="cb14-19" class="hljs-ln-code"><a href="#cb14-19"></a>    }</span>
+<span id="cb14-20" class="hljs-ln-code"><a href="#cb14-20"></a>  }</span>
+<span id="cb14-21" class="hljs-ln-code"><a href="#cb14-21"></a></span>
+<span id="cb14-22" class="hljs-ln-code"><a href="#cb14-22"></a>  <span class="fu">list</span>(</span>
+<span id="cb14-23" class="hljs-ln-code"><a href="#cb14-23"></a>    <span class="at">xstar =</span> xstar,</span>
+<span id="cb14-24" class="hljs-ln-code"><a href="#cb14-24"></a>    <span class="at">err =</span> err,</span>
+<span id="cb14-25" class="hljs-ln-code"><a href="#cb14-25"></a>    <span class="at">fxstar =</span> fxstar</span>
+<span id="cb14-26" class="hljs-ln-code"><a href="#cb14-26"></a>  )</span>
+<span id="cb14-27" class="hljs-ln-code"><a href="#cb14-27"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="newtons-method-1" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Newton's method</h2>
 <p>First, we need to get the estimate at the next iteration by applying the formula from Newton's method.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a href="#cb15-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, niter, epsilon) {</span>
+<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a href="#cb15-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, niter, epsilon) {</span>
 <span id="cb15-2" class="hljs-ln-code"><a href="#cb15-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
-<span id="cb15-3" class="hljs-ln-code"><a href="#cb15-3"></a>  xseq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(niter)</span>
-<span id="cb15-4" class="hljs-ln-code"><a href="#cb15-4"></a>  xseq[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
-<span id="cb15-5" class="hljs-ln-code"><a href="#cb15-5"></a></span>
-<span id="cb15-6" class="hljs-ln-code"><a href="#cb15-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
-<span id="cb15-7" class="hljs-ln-code"><a href="#cb15-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
-<span id="cb15-8" class="hljs-ln-code"><a href="#cb15-8"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
-<span id="cb15-9" class="hljs-ln-code"><a href="#cb15-9"></a>    <span class="do">## missing line</span></span>
-<span id="cb15-10" class="hljs-ln-code"><a href="#cb15-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb15-11" class="hljs-ln-code"><a href="#cb15-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
-<span id="cb15-12" class="hljs-ln-code"><a href="#cb15-12"></a>    </span>
-<span id="cb15-13" class="hljs-ln-code"><a href="#cb15-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb15-14" class="hljs-ln-code"><a href="#cb15-14"></a>      <span class="cf">break</span></span>
-<span id="cb15-15" class="hljs-ln-code"><a href="#cb15-15"></a>    }</span>
+<span id="cb15-3" class="hljs-ln-code"><a href="#cb15-3"></a></span>
+<span id="cb15-4" class="hljs-ln-code"><a href="#cb15-4"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
+<span id="cb15-5" class="hljs-ln-code"><a href="#cb15-5"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
+<span id="cb15-6" class="hljs-ln-code"><a href="#cb15-6"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
+<span id="cb15-7" class="hljs-ln-code"><a href="#cb15-7"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb15-8" class="hljs-ln-code"><a href="#cb15-8"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
+<span id="cb15-9" class="hljs-ln-code"><a href="#cb15-9"></a>    </span>
+<span id="cb15-10" class="hljs-ln-code"><a href="#cb15-10"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
+<span id="cb15-11" class="hljs-ln-code"><a href="#cb15-11"></a>      <span class="cf">break</span></span>
+<span id="cb15-12" class="hljs-ln-code"><a href="#cb15-12"></a>    }</span>
+<span id="cb15-13" class="hljs-ln-code"><a href="#cb15-13"></a></span>
+<span id="cb15-14" class="hljs-ln-code"><a href="#cb15-14"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
+<span id="cb15-15" class="hljs-ln-code"><a href="#cb15-15"></a>    <span class="do">## missing line</span></span>
 <span id="cb15-16" class="hljs-ln-code"><a href="#cb15-16"></a></span>
-<span id="cb15-17" class="hljs-ln-code"><a href="#cb15-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
-<span id="cb15-18" class="hljs-ln-code"><a href="#cb15-18"></a>    <span class="do">## missing line</span></span>
-<span id="cb15-19" class="hljs-ln-code"><a href="#cb15-19"></a></span>
-<span id="cb15-20" class="hljs-ln-code"><a href="#cb15-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
-<span id="cb15-21" class="hljs-ln-code"><a href="#cb15-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
-<span id="cb15-22" class="hljs-ln-code"><a href="#cb15-22"></a>    }</span>
-<span id="cb15-23" class="hljs-ln-code"><a href="#cb15-23"></a>  }</span>
-<span id="cb15-24" class="hljs-ln-code"><a href="#cb15-24"></a></span>
-<span id="cb15-25" class="hljs-ln-code"><a href="#cb15-25"></a>  <span class="fu">list</span>(</span>
-<span id="cb15-26" class="hljs-ln-code"><a href="#cb15-26"></a>    <span class="at">xstar =</span> xstar,</span>
-<span id="cb15-27" class="hljs-ln-code"><a href="#cb15-27"></a>    <span class="at">err =</span> err,</span>
-<span id="cb15-28" class="hljs-ln-code"><a href="#cb15-28"></a>    <span class="at">fxstar =</span> fxstar</span>
-<span id="cb15-29" class="hljs-ln-code"><a href="#cb15-29"></a>  )</span>
-<span id="cb15-30" class="hljs-ln-code"><a href="#cb15-30"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-17" class="hljs-ln-code"><a href="#cb15-17"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
+<span id="cb15-18" class="hljs-ln-code"><a href="#cb15-18"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
+<span id="cb15-19" class="hljs-ln-code"><a href="#cb15-19"></a>    }</span>
+<span id="cb15-20" class="hljs-ln-code"><a href="#cb15-20"></a>  }</span>
+<span id="cb15-21" class="hljs-ln-code"><a href="#cb15-21"></a></span>
+<span id="cb15-22" class="hljs-ln-code"><a href="#cb15-22"></a>  <span class="fu">list</span>(</span>
+<span id="cb15-23" class="hljs-ln-code"><a href="#cb15-23"></a>    <span class="at">xstar =</span> xstar,</span>
+<span id="cb15-24" class="hljs-ln-code"><a href="#cb15-24"></a>    <span class="at">err =</span> err,</span>
+<span id="cb15-25" class="hljs-ln-code"><a href="#cb15-25"></a>    <span class="at">fxstar =</span> fxstar</span>
+<span id="cb15-26" class="hljs-ln-code"><a href="#cb15-26"></a>  )</span>
+<span id="cb15-27" class="hljs-ln-code"><a href="#cb15-27"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="newtons-method-2" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Newton's method</h2>
-<p>Next, we need to save this estimate in the <code>i+1</code>th position.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a href="#cb16-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, niter, epsilon) {</span>
-<span id="cb16-2" class="hljs-ln-code"><a href="#cb16-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
-<span id="cb16-3" class="hljs-ln-code"><a href="#cb16-3"></a>  xseq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(niter)</span>
-<span id="cb16-4" class="hljs-ln-code"><a href="#cb16-4"></a>  xseq[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
-<span id="cb16-5" class="hljs-ln-code"><a href="#cb16-5"></a></span>
-<span id="cb16-6" class="hljs-ln-code"><a href="#cb16-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
-<span id="cb16-7" class="hljs-ln-code"><a href="#cb16-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
-<span id="cb16-8" class="hljs-ln-code"><a href="#cb16-8"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
-<span id="cb16-9" class="hljs-ln-code"><a href="#cb16-9"></a>    xseq[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> xstar</span>
-<span id="cb16-10" class="hljs-ln-code"><a href="#cb16-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb16-11" class="hljs-ln-code"><a href="#cb16-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
-<span id="cb16-12" class="hljs-ln-code"><a href="#cb16-12"></a>    </span>
-<span id="cb16-13" class="hljs-ln-code"><a href="#cb16-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb16-14" class="hljs-ln-code"><a href="#cb16-14"></a>      <span class="cf">break</span></span>
-<span id="cb16-15" class="hljs-ln-code"><a href="#cb16-15"></a>    }</span>
-<span id="cb16-16" class="hljs-ln-code"><a href="#cb16-16"></a></span>
-<span id="cb16-17" class="hljs-ln-code"><a href="#cb16-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
-<span id="cb16-18" class="hljs-ln-code"><a href="#cb16-18"></a>    <span class="do">## missing line</span></span>
-<span id="cb16-19" class="hljs-ln-code"><a href="#cb16-19"></a></span>
-<span id="cb16-20" class="hljs-ln-code"><a href="#cb16-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
-<span id="cb16-21" class="hljs-ln-code"><a href="#cb16-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
-<span id="cb16-22" class="hljs-ln-code"><a href="#cb16-22"></a>    }</span>
-<span id="cb16-23" class="hljs-ln-code"><a href="#cb16-23"></a>  }</span>
-<span id="cb16-24" class="hljs-ln-code"><a href="#cb16-24"></a></span>
-<span id="cb16-25" class="hljs-ln-code"><a href="#cb16-25"></a>  <span class="fu">list</span>(</span>
-<span id="cb16-26" class="hljs-ln-code"><a href="#cb16-26"></a>    <span class="at">xstar =</span> xstar,</span>
-<span id="cb16-27" class="hljs-ln-code"><a href="#cb16-27"></a>    <span class="at">err =</span> err,</span>
-<span id="cb16-28" class="hljs-ln-code"><a href="#cb16-28"></a>    <span class="at">fxstar =</span> fxstar</span>
-<span id="cb16-29" class="hljs-ln-code"><a href="#cb16-29"></a>  )</span>
-<span id="cb16-30" class="hljs-ln-code"><a href="#cb16-30"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="newtons-method-3" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
-<h2 data-id="quarto-animate-title">Newton's method</h2>
 <p>Finally, we need to update <span class="math inline">f(x_{0})</span> to be the function evaluated at the current x-value, i.e. <span class="math inline">f(x^{*})</span>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17" data-code-line-numbers="18"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a href="#cb17-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, <span class="at">niter=</span><span class="dv">200</span>, epsilon) {</span>
-<span id="cb17-2" class="hljs-ln-code"><a href="#cb17-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
-<span id="cb17-3" class="hljs-ln-code"><a href="#cb17-3"></a>  xseq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(niter<span class="sc">+</span><span class="dv">1</span>)</span>
-<span id="cb17-4" class="hljs-ln-code"><a href="#cb17-4"></a>  xseq[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
-<span id="cb17-5" class="hljs-ln-code"><a href="#cb17-5"></a></span>
-<span id="cb17-6" class="hljs-ln-code"><a href="#cb17-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
-<span id="cb17-7" class="hljs-ln-code"><a href="#cb17-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
-<span id="cb17-8" class="hljs-ln-code"><a href="#cb17-8"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
-<span id="cb17-9" class="hljs-ln-code"><a href="#cb17-9"></a>    xseq[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> xstar</span>
-<span id="cb17-10" class="hljs-ln-code"><a href="#cb17-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb17-11" class="hljs-ln-code"><a href="#cb17-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
-<span id="cb17-12" class="hljs-ln-code"><a href="#cb17-12"></a></span>
-<span id="cb17-13" class="hljs-ln-code"><a href="#cb17-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb17-14" class="hljs-ln-code"><a href="#cb17-14"></a>      <span class="cf">break</span></span>
-<span id="cb17-15" class="hljs-ln-code"><a href="#cb17-15"></a>    }</span>
-<span id="cb17-16" class="hljs-ln-code"><a href="#cb17-16"></a></span>
-<span id="cb17-17" class="hljs-ln-code"><a href="#cb17-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
-<span id="cb17-18" class="hljs-ln-code"><a href="#cb17-18"></a>    fx0 <span class="ot">&lt;-</span> fxstar</span>
-<span id="cb17-19" class="hljs-ln-code"><a href="#cb17-19"></a></span>
-<span id="cb17-20" class="hljs-ln-code"><a href="#cb17-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
-<span id="cb17-21" class="hljs-ln-code"><a href="#cb17-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
-<span id="cb17-22" class="hljs-ln-code"><a href="#cb17-22"></a>    }</span>
-<span id="cb17-23" class="hljs-ln-code"><a href="#cb17-23"></a>  }</span>
-<span id="cb17-24" class="hljs-ln-code"><a href="#cb17-24"></a></span>
-<span id="cb17-25" class="hljs-ln-code"><a href="#cb17-25"></a>  <span class="fu">list</span>(</span>
-<span id="cb17-26" class="hljs-ln-code"><a href="#cb17-26"></a>    <span class="at">xstar =</span> xstar,</span>
-<span id="cb17-27" class="hljs-ln-code"><a href="#cb17-27"></a>    <span class="at">err =</span> err,</span>
-<span id="cb17-28" class="hljs-ln-code"><a href="#cb17-28"></a>    <span class="at">fxstar =</span> fxstar</span>
-<span id="cb17-29" class="hljs-ln-code"><a href="#cb17-29"></a>  )</span>
-<span id="cb17-30" class="hljs-ln-code"><a href="#cb17-30"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a href="#cb16-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, <span class="at">niter=</span><span class="dv">200</span>, epsilon) {</span>
+<span id="cb16-2" class="hljs-ln-code"><a href="#cb16-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
+<span id="cb16-3" class="hljs-ln-code"><a href="#cb16-3"></a></span>
+<span id="cb16-4" class="hljs-ln-code"><a href="#cb16-4"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
+<span id="cb16-5" class="hljs-ln-code"><a href="#cb16-5"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
+<span id="cb16-6" class="hljs-ln-code"><a href="#cb16-6"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
+<span id="cb16-7" class="hljs-ln-code"><a href="#cb16-7"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb16-8" class="hljs-ln-code"><a href="#cb16-8"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
+<span id="cb16-9" class="hljs-ln-code"><a href="#cb16-9"></a></span>
+<span id="cb16-10" class="hljs-ln-code"><a href="#cb16-10"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
+<span id="cb16-11" class="hljs-ln-code"><a href="#cb16-11"></a>      <span class="cf">break</span></span>
+<span id="cb16-12" class="hljs-ln-code"><a href="#cb16-12"></a>    }</span>
+<span id="cb16-13" class="hljs-ln-code"><a href="#cb16-13"></a></span>
+<span id="cb16-14" class="hljs-ln-code"><a href="#cb16-14"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
+<span id="cb16-15" class="hljs-ln-code"><a href="#cb16-15"></a>    fx0 <span class="ot">&lt;-</span> fxstar</span>
+<span id="cb16-16" class="hljs-ln-code"><a href="#cb16-16"></a></span>
+<span id="cb16-17" class="hljs-ln-code"><a href="#cb16-17"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
+<span id="cb16-18" class="hljs-ln-code"><a href="#cb16-18"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
+<span id="cb16-19" class="hljs-ln-code"><a href="#cb16-19"></a>    }</span>
+<span id="cb16-20" class="hljs-ln-code"><a href="#cb16-20"></a>  }</span>
+<span id="cb16-21" class="hljs-ln-code"><a href="#cb16-21"></a></span>
+<span id="cb16-22" class="hljs-ln-code"><a href="#cb16-22"></a>  <span class="fu">list</span>(</span>
+<span id="cb16-23" class="hljs-ln-code"><a href="#cb16-23"></a>    <span class="at">xstar =</span> xstar,</span>
+<span id="cb16-24" class="hljs-ln-code"><a href="#cb16-24"></a>    <span class="at">err =</span> err,</span>
+<span id="cb16-25" class="hljs-ln-code"><a href="#cb16-25"></a>    <span class="at">fxstar =</span> fxstar</span>
+<span id="cb16-26" class="hljs-ln-code"><a href="#cb16-26"></a>  )</span>
+<span id="cb16-27" class="hljs-ln-code"><a href="#cb16-27"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="newtons-method-example" class="slide level2">
@@ -704,15 +657,15 @@ $fxstar
 <p><span class="math display">f(x) \,=\, (x^{2} - 3)\sin{(x)}</span></p>
 <p><span class="math display">f'(x) \,=\, 2x\sin{(x)} \,+\, (x^{2} - 3)\cos{(x)}</span></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>dfunc1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb18-2"><a href="#cb18-2"></a>  <span class="dv">2</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">sin</span>(x) <span class="sc">+</span> (x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">3</span>)<span class="sc">*</span><span class="fu">cos</span>(x)</span>
-<span id="cb18-3"><a href="#cb18-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>dfunc1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="dv">2</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">sin</span>(x) <span class="sc">+</span> (x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">3</span>)<span class="sc">*</span><span class="fu">cos</span>(x)</span>
+<span id="cb17-3"><a href="#cb17-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="newtons-method-example-1" class="slide level2">
 <h2>Newton's method example</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="dv">2</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="dv">2</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] 1.732051
@@ -727,7 +680,7 @@ $fxstar
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="sc">-</span><span class="dv">2</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="sc">-</span><span class="dv">2</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] -1.732051
@@ -743,7 +696,7 @@ $fxstar
 <section id="newtons-method-example-2" class="slide level2">
 <h2>Newton's method example</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="fl">0.1</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="fl">0.1</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] 1.038289e-09
@@ -758,7 +711,7 @@ $fxstar
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="fl">2.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="fl">2.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] 3.141593
@@ -773,7 +726,7 @@ $fxstar
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="sc">-</span><span class="fl">2.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">newton</span>(func1, dfunc1, <span class="at">x0=</span><span class="sc">-</span><span class="fl">2.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] -3.141593
@@ -791,11 +744,11 @@ $fxstar
 <p>What range of values can we supply to <code>x0</code> such that Newton's method will converge to a root?</p>
 <p>We should converge to a root so long as <span class="math inline">f'(x)</span> is not too close to zero.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">curve</span>(dfunc1, <span class="at">from=</span><span class="sc">-</span><span class="dv">10</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
-<span id="cb29-2"><a href="#cb29-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">curve</span>(dfunc1, <span class="at">from=</span><span class="sc">-</span><span class="dv">10</span>, <span class="at">to=</span><span class="dv">10</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-21-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="another-example" class="slide level2">
 <h2>Another example</h2>
 <p>Consider the function</p>
@@ -804,37 +757,37 @@ $fxstar
 <p>Its derivative is given by</p>
 <p><span class="math display">f'(x) \,=\, (5\cos{(5x)} + 2)e^{-x^{2}} \,-\, (\sin{(5x)} + 2x)2xe^{-x^{2}}.</span></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>func2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb30-2"><a href="#cb30-2"></a>  (<span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.3</span></span>
-<span id="cb30-3"><a href="#cb30-3"></a>}</span>
-<span id="cb30-4"><a href="#cb30-4"></a></span>
-<span id="cb30-5"><a href="#cb30-5"></a>dfunc2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb30-6"><a href="#cb30-6"></a>  (<span class="dv">5</span><span class="sc">*</span><span class="fu">cos</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> (<span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb30-7"><a href="#cb30-7"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>func2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb29-2"><a href="#cb29-2"></a>  (<span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.3</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a>}</span>
+<span id="cb29-4"><a href="#cb29-4"></a></span>
+<span id="cb29-5"><a href="#cb29-5"></a>dfunc2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb29-6"><a href="#cb29-6"></a>  (<span class="dv">5</span><span class="sc">*</span><span class="fu">cos</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> (<span class="fu">sin</span>(<span class="dv">5</span><span class="sc">*</span>x) <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>x<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb29-7"><a href="#cb29-7"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="plot-the-curve" class="slide level2">
 <h2>Plot the curve</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">curve</span>(func2, <span class="at">from=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">to=</span><span class="fl">1.5</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylab=</span><span class="st">"y"</span>)</span>
-<span id="cb31-2"><a href="#cb31-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">curve</span>(func2, <span class="at">from=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">to=</span><span class="fl">1.5</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">ylab=</span><span class="st">"y"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-22-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="where-will-newtons-method-converge" class="slide level2">
 <h2>Where will Newton's method converge?</h2>
 <p>For what values of <span class="math inline">x_{0}</span> will Newton's method converge to the root?</p>
 <p>Again, we should converge to a root so long as <span class="math inline">f'(x)</span> does not get too close to zero.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">curve</span>(dfunc2, <span class="at">from=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">to=</span><span class="fl">1.5</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
-<span id="cb32-2"><a href="#cb32-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">curve</span>(dfunc2, <span class="at">from=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">to=</span><span class="fl">1.5</span>, <span class="at">col=</span><span class="st">"darkred"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb31-2"><a href="#cb31-2"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"forestgreen"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-23-1.svg" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="find-the-root-using-newtons" class="slide level2">
 <h2>Find the root (using Newton's)</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">newton</span>(func2, dfunc2, <span class="at">x0=</span><span class="dv">0</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">newton</span>(func2, dfunc2, <span class="at">x0=</span><span class="dv">0</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] -0.0431761
@@ -850,7 +803,7 @@ $fxstar
 <section id="find-the-root-using-bisection" class="slide level2">
 <h2>Find the root (using bisection)</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="fu">bisect</span>(func2, <span class="at">a=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">b=</span><span class="fl">1.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">bisect</span>(func2, <span class="at">a=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">b=</span><span class="fl">1.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$xstar
 [1] -0.0431761
@@ -870,88 +823,88 @@ $fxstar
 <section id="modify-bisect" class="slide level2">
 <h2>Modify <code>bisect</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb37" data-code-line-numbers="|10|14|34-39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>bisect <span class="ot">&lt;-</span> <span class="cf">function</span>(f, a, b, epsilon) {</span>
-<span id="cb37-2"><a href="#cb37-2"></a>  fa <span class="ot">&lt;-</span> <span class="fu">f</span>(a)</span>
-<span id="cb37-3"><a href="#cb37-3"></a>  fb <span class="ot">&lt;-</span> <span class="fu">f</span>(b)</span>
-<span id="cb37-4"><a href="#cb37-4"></a></span>
-<span id="cb37-5"><a href="#cb37-5"></a>  <span class="cf">if</span> (fa <span class="sc">*</span> fb <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb37-6"><a href="#cb37-6"></a>    <span class="fu">stop</span>(<span class="st">"There is no zero between the supplied values of `a` and `b`."</span>)</span>
-<span id="cb37-7"><a href="#cb37-7"></a>  }</span>
-<span id="cb37-8"><a href="#cb37-8"></a></span>
-<span id="cb37-9"><a href="#cb37-9"></a>  numiter <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb37-10"><a href="#cb37-10"></a>  xvals <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_real_</span>, numiter)</span>
-<span id="cb37-11"><a href="#cb37-11"></a></span>
-<span id="cb37-12"><a href="#cb37-12"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numiter) {</span>
-<span id="cb37-13"><a href="#cb37-13"></a>    xstar <span class="ot">&lt;-</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb37-14"><a href="#cb37-14"></a>    xvals[i] <span class="ot">&lt;-</span> xstar</span>
-<span id="cb37-15"><a href="#cb37-15"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb37-16"><a href="#cb37-16"></a></span>
-<span id="cb37-17"><a href="#cb37-17"></a>    <span class="cf">if</span> (fa <span class="sc">*</span> fxstar <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
-<span id="cb37-18"><a href="#cb37-18"></a>      b <span class="ot">&lt;-</span> xstar</span>
-<span id="cb37-19"><a href="#cb37-19"></a>      fb <span class="ot">&lt;-</span> fxstar</span>
-<span id="cb37-20"><a href="#cb37-20"></a>    } <span class="cf">else</span> {</span>
-<span id="cb37-21"><a href="#cb37-21"></a>      a <span class="ot">&lt;-</span> xstar</span>
-<span id="cb37-22"><a href="#cb37-22"></a>      fa <span class="ot">&lt;-</span> fxstar</span>
-<span id="cb37-23"><a href="#cb37-23"></a>    }</span>
-<span id="cb37-24"><a href="#cb37-24"></a></span>
-<span id="cb37-25"><a href="#cb37-25"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(b <span class="sc">-</span> a) <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb37-26"><a href="#cb37-26"></a>      <span class="cf">break</span></span>
-<span id="cb37-27"><a href="#cb37-27"></a>    }</span>
-<span id="cb37-28"><a href="#cb37-28"></a></span>
-<span id="cb37-29"><a href="#cb37-29"></a>    <span class="cf">if</span> (i <span class="sc">==</span> numiter) {</span>
-<span id="cb37-30"><a href="#cb37-30"></a>      <span class="fu">stop</span>(<span class="st">"Maximum number of iterations exceeded!"</span>)</span>
-<span id="cb37-31"><a href="#cb37-31"></a>    }</span>
-<span id="cb37-32"><a href="#cb37-32"></a>  }</span>
-<span id="cb37-33"><a href="#cb37-33"></a></span>
-<span id="cb37-34"><a href="#cb37-34"></a>  <span class="fu">list</span>(</span>
-<span id="cb37-35"><a href="#cb37-35"></a>    <span class="at">xstar =</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb37-36"><a href="#cb37-36"></a>    <span class="at">err =</span> <span class="fu">abs</span>(b <span class="sc">-</span> a),</span>
-<span id="cb37-37"><a href="#cb37-37"></a>    <span class="at">fxstar =</span> <span class="fu">f</span>(xstar),</span>
-<span id="cb37-38"><a href="#cb37-38"></a>    <span class="at">xvals =</span> xvals</span>
-<span id="cb37-39"><a href="#cb37-39"></a>  )</span>
-<span id="cb37-40"><a href="#cb37-40"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36" data-code-line-numbers="|10|14|34-39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>bisect <span class="ot">&lt;-</span> <span class="cf">function</span>(f, a, b, epsilon) {</span>
+<span id="cb36-2"><a href="#cb36-2"></a>  fa <span class="ot">&lt;-</span> <span class="fu">f</span>(a)</span>
+<span id="cb36-3"><a href="#cb36-3"></a>  fb <span class="ot">&lt;-</span> <span class="fu">f</span>(b)</span>
+<span id="cb36-4"><a href="#cb36-4"></a></span>
+<span id="cb36-5"><a href="#cb36-5"></a>  <span class="cf">if</span> (fa <span class="sc">*</span> fb <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb36-6"><a href="#cb36-6"></a>    <span class="fu">stop</span>(<span class="st">"There is no zero between the supplied values of `a` and `b`."</span>)</span>
+<span id="cb36-7"><a href="#cb36-7"></a>  }</span>
+<span id="cb36-8"><a href="#cb36-8"></a></span>
+<span id="cb36-9"><a href="#cb36-9"></a>  numiter <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb36-10"><a href="#cb36-10"></a>  xvals <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_real_</span>, numiter)</span>
+<span id="cb36-11"><a href="#cb36-11"></a></span>
+<span id="cb36-12"><a href="#cb36-12"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numiter) {</span>
+<span id="cb36-13"><a href="#cb36-13"></a>    xstar <span class="ot">&lt;-</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb36-14"><a href="#cb36-14"></a>    xvals[i] <span class="ot">&lt;-</span> xstar</span>
+<span id="cb36-15"><a href="#cb36-15"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb36-16"><a href="#cb36-16"></a></span>
+<span id="cb36-17"><a href="#cb36-17"></a>    <span class="cf">if</span> (fa <span class="sc">*</span> fxstar <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb36-18"><a href="#cb36-18"></a>      b <span class="ot">&lt;-</span> xstar</span>
+<span id="cb36-19"><a href="#cb36-19"></a>      fb <span class="ot">&lt;-</span> fxstar</span>
+<span id="cb36-20"><a href="#cb36-20"></a>    } <span class="cf">else</span> {</span>
+<span id="cb36-21"><a href="#cb36-21"></a>      a <span class="ot">&lt;-</span> xstar</span>
+<span id="cb36-22"><a href="#cb36-22"></a>      fa <span class="ot">&lt;-</span> fxstar</span>
+<span id="cb36-23"><a href="#cb36-23"></a>    }</span>
+<span id="cb36-24"><a href="#cb36-24"></a></span>
+<span id="cb36-25"><a href="#cb36-25"></a>    <span class="cf">if</span> (<span class="fu">abs</span>(b <span class="sc">-</span> a) <span class="sc">&lt;</span> epsilon) {</span>
+<span id="cb36-26"><a href="#cb36-26"></a>      <span class="cf">break</span></span>
+<span id="cb36-27"><a href="#cb36-27"></a>    }</span>
+<span id="cb36-28"><a href="#cb36-28"></a></span>
+<span id="cb36-29"><a href="#cb36-29"></a>    <span class="cf">if</span> (i <span class="sc">==</span> numiter) {</span>
+<span id="cb36-30"><a href="#cb36-30"></a>      <span class="fu">stop</span>(<span class="st">"Maximum number of iterations exceeded!"</span>)</span>
+<span id="cb36-31"><a href="#cb36-31"></a>    }</span>
+<span id="cb36-32"><a href="#cb36-32"></a>  }</span>
+<span id="cb36-33"><a href="#cb36-33"></a></span>
+<span id="cb36-34"><a href="#cb36-34"></a>  <span class="fu">list</span>(</span>
+<span id="cb36-35"><a href="#cb36-35"></a>    <span class="at">xstar =</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb36-36"><a href="#cb36-36"></a>    <span class="at">err =</span> <span class="fu">abs</span>(b <span class="sc">-</span> a),</span>
+<span id="cb36-37"><a href="#cb36-37"></a>    <span class="at">fxstar =</span> <span class="fu">f</span>(xstar),</span>
+<span id="cb36-38"><a href="#cb36-38"></a>    <span class="at">xvals =</span> xvals</span>
+<span id="cb36-39"><a href="#cb36-39"></a>  )</span>
+<span id="cb36-40"><a href="#cb36-40"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="modify-newton" class="slide level2">
 <h2>Modify <code>newton</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb38" data-code-line-numbers="|29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, <span class="at">niter=</span><span class="dv">200</span>, epsilon) {</span>
-<span id="cb38-2"><a href="#cb38-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
-<span id="cb38-3"><a href="#cb38-3"></a>  xseq <span class="ot">&lt;-</span> <span class="fu">numeric</span>(niter<span class="sc">+</span><span class="dv">1</span>)</span>
-<span id="cb38-4"><a href="#cb38-4"></a>  xseq[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
-<span id="cb38-5"><a href="#cb38-5"></a></span>
-<span id="cb38-6"><a href="#cb38-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
-<span id="cb38-7"><a href="#cb38-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
-<span id="cb38-8"><a href="#cb38-8"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
-<span id="cb38-9"><a href="#cb38-9"></a>    xseq[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> xstar</span>
-<span id="cb38-10"><a href="#cb38-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb38-11"><a href="#cb38-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
-<span id="cb38-12"><a href="#cb38-12"></a></span>
-<span id="cb38-13"><a href="#cb38-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
-<span id="cb38-14"><a href="#cb38-14"></a>      <span class="cf">break</span></span>
-<span id="cb38-15"><a href="#cb38-15"></a>    }</span>
-<span id="cb38-16"><a href="#cb38-16"></a></span>
-<span id="cb38-17"><a href="#cb38-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
-<span id="cb38-18"><a href="#cb38-18"></a>    fx0 <span class="ot">&lt;-</span> fxstar</span>
-<span id="cb38-19"><a href="#cb38-19"></a></span>
-<span id="cb38-20"><a href="#cb38-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
-<span id="cb38-21"><a href="#cb38-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
-<span id="cb38-22"><a href="#cb38-22"></a>    }</span>
-<span id="cb38-23"><a href="#cb38-23"></a>  }</span>
-<span id="cb38-24"><a href="#cb38-24"></a></span>
-<span id="cb38-25"><a href="#cb38-25"></a>  <span class="fu">list</span>(</span>
-<span id="cb38-26"><a href="#cb38-26"></a>    <span class="at">xstar =</span> xstar,</span>
-<span id="cb38-27"><a href="#cb38-27"></a>    <span class="at">err =</span> err,</span>
-<span id="cb38-28"><a href="#cb38-28"></a>    <span class="at">fxstar =</span> fxstar,</span>
-<span id="cb38-29"><a href="#cb38-29"></a>    <span class="at">xvals =</span> xseq[<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb38-30"><a href="#cb38-30"></a>  )</span>
-<span id="cb38-31"><a href="#cb38-31"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37" data-code-line-numbers="|3-4|9|25-30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, df, x0, <span class="at">niter=</span><span class="dv">200</span>, epsilon) {</span>
+<span id="cb37-2"><a href="#cb37-2"></a>  fx0 <span class="ot">&lt;-</span> <span class="fu">f</span>(x0)</span>
+<span id="cb37-3"><a href="#cb37-3"></a>  xvals <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_real_</span>, niter<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb37-4"><a href="#cb37-4"></a>  xvals[<span class="dv">1</span>] <span class="ot">&lt;-</span> x0</span>
+<span id="cb37-5"><a href="#cb37-5"></a></span>
+<span id="cb37-6"><a href="#cb37-6"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>niter) {</span>
+<span id="cb37-7"><a href="#cb37-7"></a>    dfx0 <span class="ot">&lt;-</span> <span class="fu">df</span>(x0)</span>
+<span id="cb37-8"><a href="#cb37-8"></a>    xstar <span class="ot">&lt;-</span> x0 <span class="sc">-</span> fx0 <span class="sc">/</span> dfx0</span>
+<span id="cb37-9"><a href="#cb37-9"></a>    xvals[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">&lt;-</span> xstar</span>
+<span id="cb37-10"><a href="#cb37-10"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb37-11"><a href="#cb37-11"></a>    err <span class="ot">&lt;-</span> <span class="fu">abs</span>(fxstar)</span>
+<span id="cb37-12"><a href="#cb37-12"></a></span>
+<span id="cb37-13"><a href="#cb37-13"></a>    <span class="cf">if</span> (err <span class="sc">&lt;</span> epsilon) {</span>
+<span id="cb37-14"><a href="#cb37-14"></a>      <span class="cf">break</span></span>
+<span id="cb37-15"><a href="#cb37-15"></a>    }</span>
+<span id="cb37-16"><a href="#cb37-16"></a></span>
+<span id="cb37-17"><a href="#cb37-17"></a>    x0 <span class="ot">&lt;-</span> xstar</span>
+<span id="cb37-18"><a href="#cb37-18"></a>    fx0 <span class="ot">&lt;-</span> fxstar</span>
+<span id="cb37-19"><a href="#cb37-19"></a></span>
+<span id="cb37-20"><a href="#cb37-20"></a>    <span class="cf">if</span> (i <span class="sc">==</span> niter) {</span>
+<span id="cb37-21"><a href="#cb37-21"></a>      <span class="fu">stop</span>(<span class="st">"Newton's method failed to converge!"</span>)</span>
+<span id="cb37-22"><a href="#cb37-22"></a>    }</span>
+<span id="cb37-23"><a href="#cb37-23"></a>  }</span>
+<span id="cb37-24"><a href="#cb37-24"></a></span>
+<span id="cb37-25"><a href="#cb37-25"></a>  <span class="fu">list</span>(</span>
+<span id="cb37-26"><a href="#cb37-26"></a>    <span class="at">xstar =</span> xstar,</span>
+<span id="cb37-27"><a href="#cb37-27"></a>    <span class="at">err =</span> err,</span>
+<span id="cb37-28"><a href="#cb37-28"></a>    <span class="at">fxstar =</span> fxstar,</span>
+<span id="cb37-29"><a href="#cb37-29"></a>    <span class="at">xvals =</span> xvals[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb37-30"><a href="#cb37-30"></a>  )</span>
+<span id="cb37-31"><a href="#cb37-31"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="prep-data-for-plotting" class="slide level2">
 <h2>Prep data for plotting</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="fansi fansi-message"><code>-- <span style="font-weight: bold;">Attaching packages</span> --------------------------------------- tidyverse 1.3.1 --
 </code></pre>
 <pre class="fansi fansi-message"><code><span style="color: #00BB00;">v</span> <span style="color: #0000BB;">ggplot2</span> 3.3.6     <span style="color: #00BB00;">v</span> <span style="color: #0000BB;">purrr  </span> 0.3.4
@@ -967,38 +920,39 @@ $fxstar
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="prep-data-for-plotting-1" class="slide level2">
 <h2>Prep data for plotting</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>bisect_results <span class="ot">&lt;-</span> <span class="fu">bisect</span>(func2, <span class="at">a=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">b=</span><span class="fl">1.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span>
-<span id="cb41-2"><a href="#cb41-2"></a>newton_results <span class="ot">&lt;-</span> <span class="fu">newton</span>(func2, dfunc2, <span class="at">x0=</span><span class="dv">0</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>bisect_results <span class="ot">&lt;-</span> <span class="fu">bisect</span>(func2, <span class="at">a=</span><span class="sc">-</span><span class="fl">1.5</span>, <span class="at">b=</span><span class="fl">1.5</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span>
+<span id="cb40-2"><a href="#cb40-2"></a>newton_results <span class="ot">&lt;-</span> <span class="fu">newton</span>(func2, dfunc2, <span class="at">x0=</span><span class="dv">0</span>, <span class="at">epsilon=</span><span class="fl">1e-8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>both_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb42-2"><a href="#cb42-2"></a>  <span class="at">bisect =</span> <span class="fu">tibble</span>(<span class="at">En =</span> <span class="fu">log</span>(<span class="fu">abs</span>(bisect_results<span class="sc">$</span>xvals <span class="sc">-</span> bisect_results<span class="sc">$</span>xstar))) <span class="sc">%&gt;%</span></span>
-<span id="cb42-3"><a href="#cb42-3"></a>    <span class="fu">mutate</span>(<span class="at">niter =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()),</span>
-<span id="cb42-4"><a href="#cb42-4"></a>  </span>
-<span id="cb42-5"><a href="#cb42-5"></a>  <span class="at">newton =</span> <span class="fu">tibble</span>(<span class="at">En =</span> <span class="fu">log</span>(<span class="fu">abs</span>(newton_results<span class="sc">$</span>xvals <span class="sc">-</span> newton_results<span class="sc">$</span>xstar))) <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href="#cb42-6"></a>    <span class="fu">mutate</span>(<span class="at">niter =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()),</span>
-<span id="cb42-7"><a href="#cb42-7"></a>  </span>
-<span id="cb42-8"><a href="#cb42-8"></a>  <span class="at">.id =</span> <span class="st">"method"</span></span>
-<span id="cb42-9"><a href="#cb42-9"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>both_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb41-2"><a href="#cb41-2"></a>  <span class="at">bisect =</span> <span class="fu">tibble</span>(<span class="at">En =</span> <span class="fu">log</span>(<span class="fu">abs</span>(bisect_results<span class="sc">$</span>xvals <span class="sc">-</span> bisect_results<span class="sc">$</span>xstar))) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a>    <span class="fu">mutate</span>(<span class="at">niter =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()),</span>
+<span id="cb41-4"><a href="#cb41-4"></a>  </span>
+<span id="cb41-5"><a href="#cb41-5"></a>  <span class="at">newton =</span> <span class="fu">tibble</span>(<span class="at">En =</span> <span class="fu">log</span>(<span class="fu">abs</span>(newton_results<span class="sc">$</span>xvals <span class="sc">-</span> newton_results<span class="sc">$</span>xstar))) <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a>    <span class="fu">mutate</span>(<span class="at">niter =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()),</span>
+<span id="cb41-7"><a href="#cb41-7"></a>  </span>
+<span id="cb41-8"><a href="#cb41-8"></a>  <span class="at">.id =</span> <span class="st">"method"</span></span>
+<span id="cb41-9"><a href="#cb41-9"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>
 </p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>both_results <span class="sc">%&gt;%</span></span>
-<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(En)) <span class="sc">%&gt;%</span></span>
-<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">count</span>(method)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 1 x 2</span>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>both_results <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(En)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3"></a>  <span class="fu">count</span>(method)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #555555;"># A tibble: 2 x 2</span>
   method     n
   <span style="color: #555555; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #555555; font-style: italic;">&lt;int&gt;</span>
 <span style="color: #555555;">1</span> bisect   171
+<span style="color: #555555;">2</span> newton   197
 </code></pre>
 </div>
 </section>
@@ -1009,10 +963,10 @@ $fxstar
 <div class="tab-content">
 <div id="tabset-1-1">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">ggplot</span>(both_results, <span class="fu">aes</span>(<span class="at">x=</span>niter, <span class="at">y=</span>En, <span class="at">colour=</span>method)) <span class="sc">+</span></span>
-<span id="cb44-2"><a href="#cb44-2"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">geom_line</span>(<span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="fu">ggplot</span>(both_results, <span class="fu">aes</span>(<span class="at">x=</span>niter, <span class="at">y=</span>En, <span class="at">colour=</span>method)) <span class="sc">+</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">geom_line</span>(<span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-1-2">
@@ -1020,7 +974,7 @@ $fxstar
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="index_files/figure-revealjs/unnamed-chunk-35-1.svg" width="960"></p>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-34-1.svg" width="960"></p>
 </figure>
 </div>
 </div>
