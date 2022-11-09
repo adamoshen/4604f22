@@ -1,0 +1,567 @@
+---
+title: "Stat 4604: Lab 5"
+date: "November 9, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Root finding
+
+Today, we will be looking at root finding methods including:
+
+- Bisection method
+
+- Newton's method
+
+## Bisection method example
+
+Consider the function
+
+$$f(x) \,=\, (x^{2} - 3)\sin{(x)}.$$
+
+Task: Using the bisection method, find a root using a tolerance of $\epsilon \,=\, 1\times 10^{-8}$.
+
+## Bisection method example
+
+From Brightspace, download the `bisect.R` file. Then source the script to get it into your global
+environment.
+
+```{r}
+source("./R/bisect.R")
+```
+
+. . .
+
+You will also need to adjust this line to be `<=` rather than `<`, otherwise you will get weird
+results...
+
+```{r, eval=FALSE}
+#| code-line-numbers: 15
+bisect <- function(f, a, b, epsilon) {
+  fa <- f(a)
+  fb <- f(b)
+
+  if (fa * fb > 0) {
+    stop("There is no zero between the supplied values of `a` and `b`.")
+  }
+
+  numiter <- 200
+
+  for (i in 1:numiter) {
+    xstar <- (a + b) / 2
+    fxstar <- f(xstar)
+
+    if (fa * fxstar <= 0) {
+      b <- xstar
+      fb <- fxstar
+    } else {
+      . . .
+    }
+```
+
+## Bisection method example
+
+Clearly, we will also need to define $f(x)$ as a function in R.
+
+```{r}
+func1 <- function(x) {
+  (x^2 - 3) * sin(x)
+}
+```
+
+From calculus, we know that there should be roots at $\pm\sqrt{3}$ and $k\pi$ for
+$k \,\in\, \mathbb{Z}$.
+
+## Bisection method example
+
+```{r}
+bisect(func1, a=1, b=2, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+bisect(func1, a=-2, b=-1, epsilon=1e-8)
+```
+
+## Bisection method example
+
+```{r}
+bisect(func1, a=-1, b=1, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+bisect(func1, a=2, b=4, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+bisect(func1, a=-4, b=-2, epsilon=1e-8)
+```
+
+## Newton's method {auto-animate=true}
+
+From Brightspace, download the `newton.R` file.
+
+Just before the `for` loop, you will need to initialise `xseq`, otherwise the provided code will not
+work. We should also record `x0` as the first element of `xseq`.
+
+There are also two missing lines under the `dfx0` part.
+
+```{r, eval=FALSE}
+#| code-line-numbers: "3-4,8-9"
+newton <- function(f, df, x0, niter, epsilon) {
+  fx0 <- f(x0)
+  xseq <- numeric(niter)
+  xseq[1] <- x0
+
+  for (i in 1:niter) {
+    dfx0 <- df(x0)
+    ## missing line
+    ## missing line
+    fxstar <- f(xstar)
+    err <- abs(fxstar)
+    
+    if (err < epsilon) {
+      break
+    }
+
+    x0 <- xstar
+    ## missing line
+
+    if (i == niter) {
+      stop("Newton's method failed to converge!")
+    }
+  }
+
+  list(
+    xstar = xstar,
+    err = err,
+    fxstar = fxstar
+  )
+}
+```
+
+## Newton's method {auto-animate=true, visibility=uncounted}
+
+First, we need to get the estimate at the next iteration by applying the formula from Newton's
+method.
+
+```{r, eval=FALSE}
+#| code-line-numbers: "8"
+newton <- function(f, df, x0, niter, epsilon) {
+  fx0 <- f(x0)
+  xseq <- numeric(niter)
+  xseq[1] <- x0
+
+  for (i in 1:niter) {
+    dfx0 <- df(x0)
+    xstar <- x0 - fx0 / dfx0
+    ## missing line
+    fxstar <- f(xstar)
+    err <- abs(fxstar)
+    
+    if (err < epsilon) {
+      break
+    }
+
+    x0 <- xstar
+    ## missing line
+
+    if (i == niter) {
+      stop("Newton's method failed to converge!")
+    }
+  }
+
+  list(
+    xstar = xstar,
+    err = err,
+    fxstar = fxstar
+  )
+}
+```
+
+## Newton's method {auto-animate=true, visibility=uncounted}
+
+Next, we need to save this estimate in the `i+1`th position.
+
+```{r, eval=FALSE}
+#| code-line-numbers: "9"
+newton <- function(f, df, x0, niter, epsilon) {
+  fx0 <- f(x0)
+  xseq <- numeric(niter)
+  xseq[1] <- x0
+
+  for (i in 1:niter) {
+    dfx0 <- df(x0)
+    xstar <- x0 - fx0 / dfx0
+    xseq[i+1] <- xstar
+    fxstar <- f(xstar)
+    err <- abs(fxstar)
+    
+    if (err < epsilon) {
+      break
+    }
+
+    x0 <- xstar
+    ## missing line
+
+    if (i == niter) {
+      stop("Newton's method failed to converge!")
+    }
+  }
+
+  list(
+    xstar = xstar,
+    err = err,
+    fxstar = fxstar
+  )
+}
+```
+
+## Newton's method {auto-animate=true, visibility=uncounted}
+
+Finally, we need to update $f(x_{0})$ to be the function evaluated at the current x-value, i.e.
+$f(x^{*})$.
+
+```{r, eval=FALSE}
+#| code-line-numbers: "18"
+newton <- function(f, df, x0, niter=200, epsilon) {
+  fx0 <- f(x0)
+  xseq <- numeric(niter+1)
+  xseq[1] <- x0
+
+  for (i in 1:niter) {
+    dfx0 <- df(x0)
+    xstar <- x0 - fx0 / dfx0
+    xseq[i+1] <- xstar
+    fxstar <- f(xstar)
+    err <- abs(fxstar)
+
+    if (err < epsilon) {
+      break
+    }
+
+    x0 <- xstar
+    fx0 <- fxstar
+
+    if (i == niter) {
+      stop("Newton's method failed to converge!")
+    }
+  }
+
+  list(
+    xstar = xstar,
+    err = err,
+    fxstar = fxstar
+  )
+}
+```
+
+```{r, include=FALSE}
+source("./R/newton-full.R")
+```
+
+## Newton's method example
+
+Let's find some roots for the function from before.
+
+We will need to define the derivative as a function in R first.
+
+$$f(x) \,=\, (x^{2} - 3)\sin{(x)}$$
+
+$$f'(x) \,=\, 2x\sin{(x)} \,+\, (x^{2} - 3)\cos{(x)}$$
+
+```{r}
+dfunc1 <- function(x) {
+  2*x*sin(x) + (x^2 - 3)*cos(x)
+}
+```
+
+## Newton's method example
+
+```{r}
+newton(func1, dfunc1, x0=2, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+newton(func1, dfunc1, x0=-2, epsilon=1e-8)
+```
+
+## Newton's method example
+
+```{r}
+newton(func1, dfunc1, x0=0.1, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+newton(func1, dfunc1, x0=2.5, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+newton(func1, dfunc1, x0=-2.5, epsilon=1e-8)
+```
+
+## Newton's method example
+
+What range of values can we supply to `x0` such that Newton's method will converge to a root?
+
+We should converge to a root so long as $f'(x)$ is not too close to zero.
+
+```{r}
+curve(dfunc1, from=-10, to=10, col="darkred", lwd=2)
+abline(h=0, col="forestgreen", lwd=2, lty=2)
+```
+
+## Another example
+
+Consider the function
+
+$$f(x) \,=\, (\sin{(5x)} + 2x)e^{-x^{2}} \,+\, 0.3$$
+
+for $x \,\in\, [-1.5,\,1.5]$.
+
+Its derivative is given by
+
+$$f'(x) \,=\, (5\cos{(5x)} + 2)e^{-x^{2}} \,-\, (\sin{(5x)} + 2x)2xe^{-x^{2}}.$$
+
+```{r}
+func2 <- function(x) {
+  (sin(5*x) + 2*x) * exp(-x^2) + 0.3
+}
+
+dfunc2 <- function(x) {
+  (5*cos(5*x) + 2) * exp(-x^2) - (sin(5*x) + 2*x)*2*x*exp(-x^2)
+}
+```
+
+## Plot the curve
+
+```{r}
+curve(func2, from=-1.5, to=1.5, col="darkred", lwd=2, ylab="y")
+abline(h=0, col="forestgreen", lwd=2, lty=2)
+```
+
+## Where will Newton's method converge?
+
+For what values of $x_{0}$ will Newton's method converge to the root?
+
+Again, we should converge to a root so long as $f'(x)$ does not get too close to zero.
+
+```{r}
+curve(dfunc2, from=-1.5, to=1.5, col="darkred", lwd=2)
+abline(h=0, col="forestgreen", lwd=2, lty=2)
+```
+
+## Find the root (using Newton's)
+
+```{r}
+newton(func2, dfunc2, x0=0, epsilon=1e-8)
+```
+
+## Find the root (using bisection)
+
+```{r}
+bisect(func2, a=-1.5, b=1.5, epsilon=1e-8)
+```
+
+## Compare convergence between methods
+
+First, we need to modify our `bisect` and `newton` functions to return the sequence of x-values.
+
+## Modify `bisect`
+
+```{r}
+#| code-line-numbers: "|10|14|34-39"
+bisect <- function(f, a, b, epsilon) {
+  fa <- f(a)
+  fb <- f(b)
+
+  if (fa * fb > 0) {
+    stop("There is no zero between the supplied values of `a` and `b`.")
+  }
+
+  numiter <- 200
+  xvals <- rep(NA_real_, numiter)
+
+  for (i in 1:numiter) {
+    xstar <- (a + b) / 2
+    xvals[i] <- xstar
+    fxstar <- f(xstar)
+
+    if (fa * fxstar <= 0) {
+      b <- xstar
+      fb <- fxstar
+    } else {
+      a <- xstar
+      fa <- fxstar
+    }
+
+    if (abs(b - a) < epsilon) {
+      break
+    }
+
+    if (i == numiter) {
+      stop("Maximum number of iterations exceeded!")
+    }
+  }
+
+  list(
+    xstar = (a + b) / 2,
+    err = abs(b - a),
+    fxstar = f(xstar),
+    xvals = xvals
+  )
+}
+```
+
+## Modify `newton`
+
+```{r}
+#| code-line-numbers: "|29"
+newton <- function(f, df, x0, niter=200, epsilon) {
+  fx0 <- f(x0)
+  xseq <- numeric(niter+1)
+  xseq[1] <- x0
+
+  for (i in 1:niter) {
+    dfx0 <- df(x0)
+    xstar <- x0 - fx0 / dfx0
+    xseq[i+1] <- xstar
+    fxstar <- f(xstar)
+    err <- abs(fxstar)
+
+    if (err < epsilon) {
+      break
+    }
+
+    x0 <- xstar
+    fx0 <- fxstar
+
+    if (i == niter) {
+      stop("Newton's method failed to converge!")
+    }
+  }
+
+  list(
+    xstar = xstar,
+    err = err,
+    fxstar = fxstar,
+    xvals = xseq[-1]
+  )
+}
+```
+
+## Prep data for plotting
+
+```{r, message=TRUE}
+library(tidyverse)
+```
+
+<p></p>
+
+```{r}
+theme_set(theme_bw())
+```
+
+## Prep data for plotting
+
+```{r}
+bisect_results <- bisect(func2, a=-1.5, b=1.5, epsilon=1e-8)
+newton_results <- newton(func2, dfunc2, x0=0, epsilon=1e-8)
+```
+
+<p></p>
+
+```{r}
+both_results <- bind_rows(
+  bisect = tibble(En = log(abs(bisect_results$xvals - bisect_results$xstar))) %>%
+    mutate(niter = 1:n()),
+  
+  newton = tibble(En = log(abs(newton_results$xvals - newton_results$xstar))) %>%
+    mutate(niter = 1:n()),
+  
+  .id = "method"
+)
+```
+
+<p></p>
+
+```{r}
+both_results %>%
+  filter(is.na(En)) %>%
+  count(method)
+```
+
+## Plotting
+
+::: {.panel-tabset}
+
+### Code
+
+```{r, eval=FALSE}
+ggplot(both_results, aes(x=niter, y=En, colour=method)) +
+  geom_point(alpha=0.5, na.rm=TRUE) +
+  geom_line(na.rm=TRUE) +
+  scale_colour_manual(values = c("#0072B2", "#D55E00"))
+```
+
+### Plot
+
+```{r, echo=FALSE}
+ggplot(both_results, aes(x=niter, y=En, colour=method)) +
+  geom_point(alpha=0.5, na.rm=TRUE) +
+  geom_line(na.rm=TRUE) +
+  scale_colour_manual(values = c("#0072B2", "#D55E00"))
+```
+
+:::
