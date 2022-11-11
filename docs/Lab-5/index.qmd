@@ -143,21 +143,12 @@ bisect(func1, a=-4, b=-2, epsilon=1e-8)
 
 From Brightspace, download the `newton.R` file.
 
-Just before the `for` loop, you will need to initialise `xseq`, otherwise the provided code will not
-work. We should also record `x0` as the first element of `xseq`.
-
-There are also two missing lines under the `dfx0` part.
-
 ```{r, eval=FALSE}
-#| code-line-numbers: "3-4,8-9"
 newton <- function(f, df, x0, niter, epsilon) {
   fx0 <- f(x0)
-  xseq <- numeric(niter)
-  xseq[1] <- x0
 
   for (i in 1:niter) {
     dfx0 <- df(x0)
-    ## missing line
     ## missing line
     fxstar <- f(xstar)
     err <- abs(fxstar)
@@ -188,54 +179,13 @@ First, we need to get the estimate at the next iteration by applying the formula
 method.
 
 ```{r, eval=FALSE}
-#| code-line-numbers: "8"
+#| code-line-numbers: "6"
 newton <- function(f, df, x0, niter, epsilon) {
   fx0 <- f(x0)
-  xseq <- numeric(niter)
-  xseq[1] <- x0
 
   for (i in 1:niter) {
     dfx0 <- df(x0)
     xstar <- x0 - fx0 / dfx0
-    ## missing line
-    fxstar <- f(xstar)
-    err <- abs(fxstar)
-    
-    if (err < epsilon) {
-      break
-    }
-
-    x0 <- xstar
-    ## missing line
-
-    if (i == niter) {
-      stop("Newton's method failed to converge!")
-    }
-  }
-
-  list(
-    xstar = xstar,
-    err = err,
-    fxstar = fxstar
-  )
-}
-```
-
-## Newton's method {auto-animate=true, visibility=uncounted}
-
-Next, we need to save this estimate in the `i+1`th position.
-
-```{r, eval=FALSE}
-#| code-line-numbers: "9"
-newton <- function(f, df, x0, niter, epsilon) {
-  fx0 <- f(x0)
-  xseq <- numeric(niter)
-  xseq[1] <- x0
-
-  for (i in 1:niter) {
-    dfx0 <- df(x0)
-    xstar <- x0 - fx0 / dfx0
-    xseq[i+1] <- xstar
     fxstar <- f(xstar)
     err <- abs(fxstar)
     
@@ -265,16 +215,13 @@ Finally, we need to update $f(x_{0})$ to be the function evaluated at the curren
 $f(x^{*})$.
 
 ```{r, eval=FALSE}
-#| code-line-numbers: "18"
+#| code-line-numbers: "15"
 newton <- function(f, df, x0, niter=200, epsilon) {
   fx0 <- f(x0)
-  xseq <- numeric(niter+1)
-  xseq[1] <- x0
 
   for (i in 1:niter) {
     dfx0 <- df(x0)
     xstar <- x0 - fx0 / dfx0
-    xseq[i+1] <- xstar
     fxstar <- f(xstar)
     err <- abs(fxstar)
 
@@ -464,16 +411,16 @@ bisect <- function(f, a, b, epsilon) {
 ## Modify `newton`
 
 ```{r}
-#| code-line-numbers: "|29"
+#| code-line-numbers: "|3-4|9|25-30"
 newton <- function(f, df, x0, niter=200, epsilon) {
   fx0 <- f(x0)
-  xseq <- numeric(niter+1)
-  xseq[1] <- x0
+  xvals <- rep(NA_real_, niter+1)
+  xvals[1] <- x0
 
   for (i in 1:niter) {
     dfx0 <- df(x0)
     xstar <- x0 - fx0 / dfx0
-    xseq[i+1] <- xstar
+    xvals[i+1] <- xstar
     fxstar <- f(xstar)
     err <- abs(fxstar)
 
@@ -493,7 +440,7 @@ newton <- function(f, df, x0, niter=200, epsilon) {
     xstar = xstar,
     err = err,
     fxstar = fxstar,
-    xvals = xseq[-1]
+    xvals = xvals[-1]
   )
 }
 ```
