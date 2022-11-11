@@ -434,34 +434,32 @@
 </section>
 <section id="bisection-method-example-1" class="slide level2">
 <h2>Bisection method example</h2>
-<p>From Brightspace, download the <code>bisect.R</code> file. Then source the script to get it into your global environment.</p>
+<p>From Brightspace, download the <code>bisect.R</code> file. You will need to adjust this line to be <code>&lt;=</code> rather than <code>&lt;</code>, otherwise you will get weird results...</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">source</span>(<span class="st">"./R/bisect.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>bisect <span class="ot">&lt;-</span> <span class="cf">function</span>(f, a, b, epsilon) {</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  fa <span class="ot">&lt;-</span> <span class="fu">f</span>(a)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  fb <span class="ot">&lt;-</span> <span class="fu">f</span>(b)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="cf">if</span> (fa <span class="sc">*</span> fb <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    <span class="fu">stop</span>(<span class="st">"There is no zero between the supplied values of `a` and `b`."</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  }</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>  numiter <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numiter) {</span>
+<span id="cb1-12"><a href="#cb1-12"></a>    xstar <span class="ot">&lt;-</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a>    <span class="cf">if</span> (fa <span class="sc">*</span> fxstar <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb1-16"><a href="#cb1-16"></a>      b <span class="ot">&lt;-</span> xstar</span>
+<span id="cb1-17"><a href="#cb1-17"></a>      fb <span class="ot">&lt;-</span> fxstar</span>
+<span id="cb1-18"><a href="#cb1-18"></a>    } <span class="cf">else</span> {</span>
+<span id="cb1-19"><a href="#cb1-19"></a>      . . .</span>
+<span id="cb1-20"><a href="#cb1-20"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="fragment">
-<p>You will also need to adjust this line to be <code>&lt;=</code> rather than <code>&lt;</code>, otherwise you will get weird results...</p>
+<p>When done, <code>source</code> it to get the function into your global environment.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>bisect <span class="ot">&lt;-</span> <span class="cf">function</span>(f, a, b, epsilon) {</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  fa <span class="ot">&lt;-</span> <span class="fu">f</span>(a)</span>
-<span id="cb2-3"><a href="#cb2-3"></a>  fb <span class="ot">&lt;-</span> <span class="fu">f</span>(b)</span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="cf">if</span> (fa <span class="sc">*</span> fb <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="fu">stop</span>(<span class="st">"There is no zero between the supplied values of `a` and `b`."</span>)</span>
-<span id="cb2-7"><a href="#cb2-7"></a>  }</span>
-<span id="cb2-8"><a href="#cb2-8"></a></span>
-<span id="cb2-9"><a href="#cb2-9"></a>  numiter <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a></span>
-<span id="cb2-11"><a href="#cb2-11"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>numiter) {</span>
-<span id="cb2-12"><a href="#cb2-12"></a>    xstar <span class="ot">&lt;-</span> (a <span class="sc">+</span> b) <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a>    fxstar <span class="ot">&lt;-</span> <span class="fu">f</span>(xstar)</span>
-<span id="cb2-14"><a href="#cb2-14"></a></span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="cf">if</span> (fa <span class="sc">*</span> fxstar <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
-<span id="cb2-16"><a href="#cb2-16"></a>      b <span class="ot">&lt;-</span> xstar</span>
-<span id="cb2-17"><a href="#cb2-17"></a>      fb <span class="ot">&lt;-</span> fxstar</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    } <span class="cf">else</span> {</span>
-<span id="cb2-19"><a href="#cb2-19"></a>      . . .</span>
-<span id="cb2-20"><a href="#cb2-20"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">source</span>(<span class="st">"./R/bisect.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="bisection-method-example-2" class="slide level2">

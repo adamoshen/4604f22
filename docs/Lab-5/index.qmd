@@ -63,17 +63,8 @@ Task: Using the bisection method, find a root using a tolerance of $\epsilon \,=
 
 ## Bisection method example
 
-From Brightspace, download the `bisect.R` file. Then source the script to get it into your global
-environment.
-
-```{r}
-source("./R/bisect.R")
-```
-
-. . .
-
-You will also need to adjust this line to be `<=` rather than `<`, otherwise you will get weird
-results...
+From Brightspace, download the `bisect.R` file. You will need to adjust this line to be `<=` rather
+than `<`, otherwise you will get weird results...
 
 ```{r, eval=FALSE}
 #| code-line-numbers: 15
@@ -97,6 +88,12 @@ bisect <- function(f, a, b, epsilon) {
     } else {
       . . .
     }
+```
+
+When done, `source` it to get the function into your global environment.
+
+```{r}
+source("./R/bisect.R")
 ```
 
 ## Bisection method example
