@@ -67,7 +67,7 @@ From Brightspace, download the `bisect.R` file. You will need to adjust this lin
 than `<`, otherwise you will get weird results...
 
 ```{r, eval=FALSE}
-#| code-line-numbers: 15
+#| code-line-numbers: "15"
 bisect <- function(f, a, b, epsilon) {
   fa <- f(a)
   fb <- f(b)
