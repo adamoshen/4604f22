@@ -89,8 +89,6 @@ init <- function(response, design_matrix) {
 }
 ```
 
-`data`: the name of the data set, as a symbol
-
 `response`: the name of the response variable, as a symbol
 
 `design_matrix`: the name of the design matrix, as a symbol
@@ -123,14 +121,14 @@ We calculate our regression coefficients and return them, as required.
 N <- as.matrix(migraine["N"])
 colnames(N) <- ""
 
-covariates <- names(migraine)[names(migraine) != "N"]
-
 X <- cbind(
   rep(1, nrow(migraine)),
-  as.matrix(migraine[covariates])
+  as.matrix(migraine[c("Trt", "sBMI")])
 )
 colnames(X)[1] <- "(Intercept)"
 ```
+
+. . .
 
 <p></p>
 
@@ -176,7 +174,7 @@ gradH <- function(beta, response, design_matrix) {
 }
 ```
 
-I'm going to make `beta` the first argument of `gradH` so that I can pipe betas into it.
+I'm going to make `beta` the first argument of `gradH` so that I can pipe betas into it (optional).
 
 ## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
 
@@ -185,6 +183,8 @@ gradH <- function(beta, response, design_matrix) {
   mu <- exp(design_matrix %*% beta)
 }
 ```
+
+We first initialize $\boldsymbol{\mu} = \exp{(\mathbf{X}\boldsymbol{\beta})}$.
 
 ## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
 
@@ -198,11 +198,10 @@ gradH <- function(beta, response, design_matrix) {
 }
 ```
 
-We first initialize $\mathbf{V}$ by passing
-$\boldsymbol{\mu} = \exp{(\mathbf{X}\boldsymbol{\beta})}$ (which returns a $1\times n$ matrix) to
-the `drop` function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass
-this result to the `diag` function, which creates a diagonal matrix using the supplied values as the
-diagonal elements.
+We then initialize $\mathbf{V}$ by passing $\boldsymbol{\mu}$ (which returns a $1\times n$ matrix)
+to the `drop` function to reduce this one-dimensional matrix into an ordinary vector. Finally, we
+pass this result to the `diag` function, which creates a diagonal matrix using the supplied values
+as the diagonal elements.
 
 ## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
 
@@ -361,14 +360,17 @@ PoisGLM <- function(response, design_matrix, tol=1e-8) {
     beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
   }
   
+  derivatives <- gradH(beta, response, design_matrix)
+  
   if (any(eigen(derivatives$hessian)$values > 0)) {
     stop("Hessian is not negative semidefinite.")
   }
 }
 ```
 
-Once we have broken out of our loop, we need to verify that our Hessian is negative semidefinite
-before returning the betas.
+Once we have broken out of our loop, we update the derivatives one last time using our final
+estimate of beta. We also need to verify that our Hessian is negative semidefinite when evaluated
+at our final estimate before returning the betas.
 
 ## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
 
@@ -386,6 +388,8 @@ PoisGLM <- function(response, design_matrix, tol=1e-8) {
     beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
   }
   
+  derivatives <- gradH(beta, response, design_matrix)
+  
   if (any(eigen(derivatives$hessian)$values > 0)) {
     stop("Hessian is not negative semidefinite.")
   }
@@ -397,13 +401,15 @@ PoisGLM <- function(response, design_matrix, tol=1e-8) {
 }
 ```
 
-If the Hessian is negative semi-definite, then we can return the betas and the Fisher score (in
-this case, equal to the negative Hessian).
+If the Hessian is negative semi-definite at our final estimate of beta, then we can return the betas
+and the Fisher score (in this case, equal to the negative Hessian).
 
 ## Test `PoisGLM`
 
+### Compare the coefficient estimates
+
 ```{r}
-PoisGLM(N, X)
+PoisGLM(N, X)$beta
 ```
 
 . . .
@@ -413,4 +419,21 @@ Compare results with built-in GLM:
 ```{r}
 glm(N ~ ., data=migraine, family="poisson") |>
   coef()
+```
+
+## Test `PoisGLM`
+
+### Compare the variance-covariance matrices
+
+```{r}
+solve(PoisGLM(N, X)$fisher_score)
+```
+
+. . .
+
+Compare results with built-in GLM:
+
+```{r}
+glm(N ~ ., data=migraine, family="poisson") |>
+  vcov()
 ```

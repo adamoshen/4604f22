@@ -451,7 +451,6 @@
 <span id="cb3-2" class="hljs-ln-code"><a href="#cb3-2"></a></span>
 <span id="cb3-3" class="hljs-ln-code"><a href="#cb3-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>data</code>: the name of the data set, as a symbol</p>
 <p><code>response</code>: the name of the response variable, as a symbol</p>
 <p><code>design_matrix</code>: the name of the design matrix, as a symbol</p>
 </section>
@@ -481,14 +480,13 @@
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>N <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(migraine[<span class="st">"N"</span>])</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="fu">colnames</span>(N) <span class="ot">&lt;-</span> <span class="st">""</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a>covariates <span class="ot">&lt;-</span> <span class="fu">names</span>(migraine)[<span class="fu">names</span>(migraine) <span class="sc">!=</span> <span class="st">"N"</span>]</span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
-<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(migraine)),</span>
-<span id="cb6-8"><a href="#cb6-8"></a>  <span class="fu">as.matrix</span>(migraine[covariates])</span>
-<span id="cb6-9"><a href="#cb6-9"></a>)</span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="fu">colnames</span>(X)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"(Intercept)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-4"><a href="#cb6-4"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(migraine)),</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">as.matrix</span>(migraine[<span class="fu">c</span>(<span class="st">"Trt"</span>, <span class="st">"sBMI"</span>)])</span>
+<span id="cb6-7"><a href="#cb6-7"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="fu">colnames</span>(X)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"(Intercept)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="fragment">
 <p>
 </p>
 <div class="cell" data-layout-align="center">
@@ -498,6 +496,7 @@
 (Intercept)  2.2805342
 Trt         -0.4362732
 sBMI         0.1924209</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -527,7 +526,7 @@ sBMI         0.1924209</code></pre>
 <span id="cb9-2" class="hljs-ln-code"><a href="#cb9-2"></a>  </span>
 <span id="cb9-3" class="hljs-ln-code"><a href="#cb9-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I'm going to make <code>beta</code> the first argument of <code>gradH</code> so that I can pipe betas into it.</p>
+<p>I'm going to make <code>beta</code> the first argument of <code>gradH</code> so that I can pipe betas into it (optional).</p>
 </section>
 <section id="task-2-the-gradh-function-3" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Task 2: The <code>gradH</code> function</h2>
@@ -536,6 +535,7 @@ sBMI         0.1924209</code></pre>
 <span id="cb10-2" class="hljs-ln-code"><a href="#cb10-2"></a>  mu <span class="ot">&lt;-</span> <span class="fu">exp</span>(design_matrix <span class="sc">%*%</span> beta)</span>
 <span id="cb10-3" class="hljs-ln-code"><a href="#cb10-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>We first initialize <span class="math inline">\boldsymbol{\mu} = \exp{(\mathbf{X}\boldsymbol{\beta})}</span>.</p>
 </section>
 <section id="task-2-the-gradh-function-4" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Task 2: The <code>gradH</code> function</h2>
@@ -548,7 +548,7 @@ sBMI         0.1924209</code></pre>
 <span id="cb11-6" class="hljs-ln-code"><a href="#cb11-6"></a>    <span class="fu">diag</span>()</span>
 <span id="cb11-7" class="hljs-ln-code"><a href="#cb11-7"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We first initialize <span class="math inline">\mathbf{V}</span> by passing <span class="math inline">\boldsymbol{\mu} = \exp{(\mathbf{X}\boldsymbol{\beta})}</span> (which returns a <span class="math inline">1\times n</span> matrix) to the <code>drop</code> function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass this result to the <code>diag</code> function, which creates a diagonal matrix using the supplied values as the diagonal elements.</p>
+<p>We then initialize <span class="math inline">\mathbf{V}</span> by passing <span class="math inline">\boldsymbol{\mu}</span> (which returns a <span class="math inline">1\times n</span> matrix) to the <code>drop</code> function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass this result to the <code>diag</code> function, which creates a diagonal matrix using the supplied values as the diagonal elements.</p>
 </section>
 <section id="task-2-the-gradh-function-5" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Task 2: The <code>gradH</code> function</h2>
@@ -701,12 +701,14 @@ sBMI          -123.4497  -50.14196 -489.62327</code></pre>
 <span id="cb21-11" class="hljs-ln-code"><a href="#cb21-11"></a>    beta <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">solve</span>(derivatives<span class="sc">$</span>hessian) <span class="sc">%*%</span> derivatives<span class="sc">$</span>gradient</span>
 <span id="cb21-12" class="hljs-ln-code"><a href="#cb21-12"></a>  }</span>
 <span id="cb21-13" class="hljs-ln-code"><a href="#cb21-13"></a>  </span>
-<span id="cb21-14" class="hljs-ln-code"><a href="#cb21-14"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">eigen</span>(derivatives<span class="sc">$</span>hessian)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
-<span id="cb21-15" class="hljs-ln-code"><a href="#cb21-15"></a>    <span class="fu">stop</span>(<span class="st">"Hessian is not negative semidefinite."</span>)</span>
-<span id="cb21-16" class="hljs-ln-code"><a href="#cb21-16"></a>  }</span>
-<span id="cb21-17" class="hljs-ln-code"><a href="#cb21-17"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-14" class="hljs-ln-code"><a href="#cb21-14"></a>  derivatives <span class="ot">&lt;-</span> <span class="fu">gradH</span>(beta, response, design_matrix)</span>
+<span id="cb21-15" class="hljs-ln-code"><a href="#cb21-15"></a>  </span>
+<span id="cb21-16" class="hljs-ln-code"><a href="#cb21-16"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">eigen</span>(derivatives<span class="sc">$</span>hessian)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
+<span id="cb21-17" class="hljs-ln-code"><a href="#cb21-17"></a>    <span class="fu">stop</span>(<span class="st">"Hessian is not negative semidefinite."</span>)</span>
+<span id="cb21-18" class="hljs-ln-code"><a href="#cb21-18"></a>  }</span>
+<span id="cb21-19" class="hljs-ln-code"><a href="#cb21-19"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Once we have broken out of our loop, we need to verify that our Hessian is negative semidefinite before returning the betas.</p>
+<p>Once we have broken out of our loop, we update the derivatives one last time using our final estimate of beta. We also need to verify that our Hessian is negative semidefinite when evaluated at our final estimate before returning the betas.</p>
 </section>
 <section id="task-3-the-poisglm-function-8" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Task 3: The <code>PoisGLM</code> function</h2>
@@ -724,34 +726,30 @@ sBMI          -123.4497  -50.14196 -489.62327</code></pre>
 <span id="cb22-11" class="hljs-ln-code"><a href="#cb22-11"></a>    beta <span class="ot">&lt;-</span> beta <span class="sc">-</span> <span class="fu">solve</span>(derivatives<span class="sc">$</span>hessian) <span class="sc">%*%</span> derivatives<span class="sc">$</span>gradient</span>
 <span id="cb22-12" class="hljs-ln-code"><a href="#cb22-12"></a>  }</span>
 <span id="cb22-13" class="hljs-ln-code"><a href="#cb22-13"></a>  </span>
-<span id="cb22-14" class="hljs-ln-code"><a href="#cb22-14"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">eigen</span>(derivatives<span class="sc">$</span>hessian)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
-<span id="cb22-15" class="hljs-ln-code"><a href="#cb22-15"></a>    <span class="fu">stop</span>(<span class="st">"Hessian is not negative semidefinite."</span>)</span>
-<span id="cb22-16" class="hljs-ln-code"><a href="#cb22-16"></a>  }</span>
-<span id="cb22-17" class="hljs-ln-code"><a href="#cb22-17"></a>  </span>
-<span id="cb22-18" class="hljs-ln-code"><a href="#cb22-18"></a>  <span class="fu">list</span>(</span>
-<span id="cb22-19" class="hljs-ln-code"><a href="#cb22-19"></a>    <span class="at">beta =</span> beta,</span>
-<span id="cb22-20" class="hljs-ln-code"><a href="#cb22-20"></a>    <span class="at">fisher_score =</span> <span class="sc">-</span>derivatives<span class="sc">$</span>hessian</span>
-<span id="cb22-21" class="hljs-ln-code"><a href="#cb22-21"></a>  )</span>
-<span id="cb22-22" class="hljs-ln-code"><a href="#cb22-22"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-14" class="hljs-ln-code"><a href="#cb22-14"></a>  derivatives <span class="ot">&lt;-</span> <span class="fu">gradH</span>(beta, response, design_matrix)</span>
+<span id="cb22-15" class="hljs-ln-code"><a href="#cb22-15"></a>  </span>
+<span id="cb22-16" class="hljs-ln-code"><a href="#cb22-16"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="fu">eigen</span>(derivatives<span class="sc">$</span>hessian)<span class="sc">$</span>values <span class="sc">&gt;</span> <span class="dv">0</span>)) {</span>
+<span id="cb22-17" class="hljs-ln-code"><a href="#cb22-17"></a>    <span class="fu">stop</span>(<span class="st">"Hessian is not negative semidefinite."</span>)</span>
+<span id="cb22-18" class="hljs-ln-code"><a href="#cb22-18"></a>  }</span>
+<span id="cb22-19" class="hljs-ln-code"><a href="#cb22-19"></a>  </span>
+<span id="cb22-20" class="hljs-ln-code"><a href="#cb22-20"></a>  <span class="fu">list</span>(</span>
+<span id="cb22-21" class="hljs-ln-code"><a href="#cb22-21"></a>    <span class="at">beta =</span> beta,</span>
+<span id="cb22-22" class="hljs-ln-code"><a href="#cb22-22"></a>    <span class="at">fisher_score =</span> <span class="sc">-</span>derivatives<span class="sc">$</span>hessian</span>
+<span id="cb22-23" class="hljs-ln-code"><a href="#cb22-23"></a>  )</span>
+<span id="cb22-24" class="hljs-ln-code"><a href="#cb22-24"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>If the Hessian is negative semi-definite, then we can return the betas and the Fisher score (in this case, equal to the negative Hessian).</p>
+<p>If the Hessian is negative semi-definite at our final estimate of beta, then we can return the betas and the Fisher score (in this case, equal to the negative Hessian).</p>
 </section>
 <section id="test-poisglm" class="slide level2">
 <h2>Test <code>PoisGLM</code></h2>
+<h3 id="compare-the-coefficient-estimates">Compare the coefficient estimates</h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">PoisGLM</span>(N, X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">PoisGLM</span>(N, X)<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$beta
-                      
+<pre><code>                      
 (Intercept)  2.5449341
 Trt         -0.5271167
-sBMI         0.1274928
-
-$fisher_score
-            (Intercept)       Trt      sBMI
-(Intercept)    517.0000 192.00000 116.62988
-Trt            192.0000 192.00000  44.64444
-sBMI           116.6299  44.64444 572.75987</code></pre>
+sBMI         0.1274928</code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -762,6 +760,32 @@ sBMI           116.6299  44.64444 572.75987</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         Trt        sBMI 
   2.5449341  -0.5271167   0.1274928 </code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="test-poisglm-1" class="slide level2">
+<h2>Test <code>PoisGLM</code></h2>
+<h3 id="compare-the-variance-covariance-matrices">Compare the variance-covariance matrices</h3>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">solve</span>(<span class="fu">PoisGLM</span>(N, X)<span class="sc">$</span>fisher_score)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              (Intercept)           Trt          sBMI
+(Intercept)  0.0031667041 -3.072452e-03 -4.053434e-04
+Trt         -0.0030724524  8.285479e-03 -2.018442e-05
+sBMI        -0.0004053434 -2.018442e-05  1.830045e-03</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Compare results with built-in GLM:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">glm</span>(N <span class="sc">~</span> ., <span class="at">data=</span>migraine, <span class="at">family=</span><span class="st">"poisson"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">vcov</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              (Intercept)           Trt          sBMI
+(Intercept)  0.0031667039 -3.072452e-03 -4.053433e-04
+Trt         -0.0030724523  8.285479e-03 -2.018441e-05
+sBMI        -0.0004053433 -2.018441e-05  1.830045e-03</code></pre>
 </div>
 </div>
 <div class="footer footer-default">
