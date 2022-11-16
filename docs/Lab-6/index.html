@@ -548,7 +548,7 @@ sBMI         0.1924209</code></pre>
 <span id="cb11-6" class="hljs-ln-code"><a href="#cb11-6"></a>    <span class="fu">diag</span>()</span>
 <span id="cb11-7" class="hljs-ln-code"><a href="#cb11-7"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We then initialize <span class="math inline">\mathbf{V}</span> by passing <span class="math inline">\boldsymbol{\mu}</span> (which returns a <span class="math inline">1\times n</span> matrix) to the <code>drop</code> function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass this result to the <code>diag</code> function, which creates a diagonal matrix using the supplied values as the diagonal elements.</p>
+<p>We then initialize <span class="math inline">\mathbf{V}</span> by passing <span class="math inline">\boldsymbol{\mu}</span> (which returns a <span class="math inline">n\times 1</span> matrix) to the <code>drop</code> function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass this result to the <code>diag</code> function, which creates a diagonal matrix using the supplied values as the diagonal elements.</p>
 </section>
 <section id="task-2-the-gradh-function-5" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Task 2: The <code>gradH</code> function</h2>

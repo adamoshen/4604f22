@@ -198,7 +198,7 @@ gradH <- function(beta, response, design_matrix) {
 }
 ```
 
-We then initialize $\mathbf{V}$ by passing $\boldsymbol{\mu}$ (which returns a $1\times n$ matrix)
+We then initialize $\mathbf{V}$ by passing $\boldsymbol{\mu}$ (which returns a $n\times 1$ matrix)
 to the `drop` function to reduce this one-dimensional matrix into an ordinary vector. Finally, we
 pass this result to the `diag` function, which creates a diagonal matrix using the supplied values
 as the diagonal elements.
