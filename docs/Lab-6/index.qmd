@@ -1,0 +1,416 @@
+---
+title: "Stat 4604: Lab 6"
+date: "November 16, 2022"
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Fitting a Poisson GLM via Newton-Raphson
+
+Today, we will be looking at fitting a Poisson GLM via Newton-Raphson.
+
+```{r}
+library(tibble)
+library(readr)
+```
+
+<p></p>
+
+```{r}
+migraine <- read_csv("./data/Pdata.csv")
+```
+
+## Task 1: The `init` function
+
+Write a function that takes $\mathbf{N}$ and $\mathbf{X}$ to initialize the Newton-Raphson algorithm.
+
+. . .
+
+In order to initialize the Newton-Raphson algorithm, we need starting points for
+$\boldsymbol{\beta}$. From the Week 8 lecture notes, it was recommended that a good starting point
+would be to use linear regression and regress $\mathbf{Z} := \ln{(\mathbf{N} + 0.1)}$ against the
+covariates.
+
+. . .
+
+As such, we have:
+
+$$\mathbf{Z} \,:=\, \ln{(\mathbf{N} + 0.1)}$$
+
+and
+
+$$\boldsymbol{\beta}_{0} \,=\, (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Z}$$
+
+## Task 1: The `init` function {auto-animate=true}
+
+```{r, eval=FALSE}
+init <- function(response, design_matrix) {
+
+}
+```
+
+`data`: the name of the data set, as a symbol
+
+`response`: the name of the response variable, as a symbol
+
+`design_matrix`: the name of the design matrix, as a symbol
+
+## Task 1: The `init` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+init <- function(response, design_matrix) {
+  Z <- log(response + 0.1)
+}
+```
+
+We calculate $\mathbf{Z}$, as recommended.
+
+## Task 1: The `init` function {auto-animate=true, visibility=uncounted}
+
+```{r}
+init <- function(response, design_matrix) {
+  Z <- log(N + 0.1)
+  
+  solve(t(design_matrix) %*% design_matrix) %*% t(design_matrix) %*% Z
+}
+```
+
+We calculate our regression coefficients and return them, as required.
+
+## Try `init`
+
+```{r}
+N <- as.matrix(migraine["N"])
+colnames(N) <- ""
+
+covariates <- names(migraine)[names(migraine) != "N"]
+
+X <- cbind(
+  rep(1, nrow(migraine)),
+  as.matrix(migraine[covariates])
+)
+colnames(X)[1] <- "(Intercept)"
+```
+
+<p></p>
+
+```{r}
+init(N, X)
+```
+
+## Task 2: The `gradH` function {auto-animate=true}
+
+Write a function that takes $\mathbf{N}$, $\mathbf{X}$, and $\boldsymbol{\beta}$, and computes and
+returns the gradient and the Hessian.
+
+. . .
+
+From the Week 8 lecture notes, it was shown that the gradient was given by:
+
+$$g(\boldsymbol{\beta}) \,=\, \mathbf{X}'(\mathbf{N} - \boldsymbol{\mu}),$$
+
+where
+
+$$\boldsymbol{\mu} \,=\, \exp{\left(\mathbf{X}\boldsymbol{\beta}\right)}$$
+
+## Task 2: The `gradH` function {auto-animate=true}
+
+Write a function that takes $\mathbf{N}$, $\mathbf{X}$, and $\boldsymbol{\beta}$, and computes and
+returns the gradient and the Hessian.
+
+From the end of the Week 7 lecture notes and the Week 8 lecture notes, it was shown that the
+Hessian was given by:
+
+$$H(\boldsymbol{\beta}) \,=\, -\mathbf{X}'\mathbf{VX},$$
+
+where
+
+$$\mathbf{V} \,=\, \text{diag}(\boldsymbol{\mu}) \,=\,
+\text{diag}(\exp{(\mathbf{X}\boldsymbol{\beta})})$$
+
+## Task 2: The `gradH` function {auto-animate=true}
+
+```{r, eval=FALSE}
+gradH <- function(beta, response, design_matrix) {
+  
+}
+```
+
+I'm going to make `beta` the first argument of `gradH` so that I can pipe betas into it.
+
+## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+gradH <- function(beta, response, design_matrix) {
+  mu <- exp(design_matrix %*% beta)
+}
+```
+
+## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+gradH <- function(beta, response, design_matrix) {
+  mu <- exp(design_matrix %*% beta)
+  
+  V <- mu |>
+    drop() |>
+    diag()
+}
+```
+
+We first initialize $\mathbf{V}$ by passing
+$\boldsymbol{\mu} = \exp{(\mathbf{X}\boldsymbol{\beta})}$ (which returns a $1\times n$ matrix) to
+the `drop` function to reduce this one-dimensional matrix into an ordinary vector. Finally, we pass
+this result to the `diag` function, which creates a diagonal matrix using the supplied values as the
+diagonal elements.
+
+## Task 2: The `gradH` function {auto-animate=true, visibility=uncounted}
+
+```{r}
+gradH <- function(beta, response, design_matrix) {
+  mu <- exp(design_matrix %*% beta)
+  
+  V <- mu |>
+    drop() |>
+    diag()
+  
+  gradient <- t(design_matrix) %*% (response - mu)
+  
+  hessian <- -t(design_matrix) %*% V %*% design_matrix
+
+  list(
+    gradient = gradient,
+    hessian = hessian
+  )
+}
+```
+
+Finally, we return the gradient and Hessian, as required.
+
+## Test `gradH`
+
+```{r}
+init(N, X) |>
+  gradH(N, X)
+```
+
+## Task 3: The `PoisGLM` function
+
+Using the results of `init` and `gradH`, write a function called `PoisGLM` that takes $\mathbf{N}$
+and $\mathbf{X}$ and returns the MLEs for $\boldsymbol{\beta}$ and the Fisher score.
+
+. . .
+
+From the Week 8 notes, to find MLEs,
+
+1. Initialize $\boldsymbol{\beta}_{0}$.
+
+2. Perform $\boldsymbol{\beta}_{k} \,=\, \boldsymbol{\beta}_{k-1} \,-\, H^{-1}(\boldsymbol{\beta}_{k-1})\cdot g(\boldsymbol{\beta}_{k-1})$.
+
+3. Repeat until $\lVert g(\boldsymbol{\beta}_{k-1})\rVert_{2} < \varepsilon$.
+
+4. Before returning our final results, verify that $H(\boldsymbol{\beta}_{k})$ is negative
+semi-definite, i.e. ensure that we have arrived at a local maximum. We can check this by checking
+that all of the Hessian's eigenvalues are $\leq 0$. (Recall in the univariate case, we checked that
+the second derivative was $< 0$ which indicated it was concave-down).
+
+## Task 3: The `PoisGLM` function {auto-animate=true}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+
+}
+```
+
+As required, the `PoisGLM` will take in the response matrix and the design matrix (similar to our
+previous functions), as well as a tolerance value (set to 1e-8 by default).
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+}
+```
+
+Initialize the starting points. I will overwrite this variable as I progress through the loop.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+  
+  repeat {
+
+  }
+}
+```
+
+Use a `repeat` loop since we do not know in advance how many times we will need to iterate. It feels
+like it will be too messy to check all of our stopping conditions and stick them into a
+`while (cond)`.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+  
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+  }
+}
+```
+
+Compute the gradient and Hessian using the current value of `beta`. We will store this into a
+variable as we will need to access it twice to extract both the Hessian and the gradient matrices.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+  
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+    
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+  }
+}
+```
+
+Check the stopping condition before computing the next iteration of betas. There is a built-in
+`norm` function that we can use to compute the Euclidean norm of a matrix.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+  
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+    
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+    
+    beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
+  }
+}
+```
+
+If the exiting condition was not met, we proceed with updating the betas.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+  
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+    
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+    
+    beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
+  }
+  
+  if (any(eigen(derivatives$hessian)$values > 0)) {
+    stop("Hessian is not negative semidefinite.")
+  }
+}
+```
+
+Once we have broken out of our loop, we need to verify that our Hessian is negative semidefinite
+before returning the betas.
+
+## Task 3: The `PoisGLM` function {auto-animate=true, visibility=uncounted}
+
+```{r}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+    
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+    
+    beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
+  }
+  
+  if (any(eigen(derivatives$hessian)$values > 0)) {
+    stop("Hessian is not negative semidefinite.")
+  }
+  
+  list(
+    beta = beta,
+    fisher_score = -derivatives$hessian
+  )
+}
+```
+
+If the Hessian is negative semi-definite, then we can return the betas and the Fisher score (in
+this case, equal to the negative Hessian).
+
+## Test `PoisGLM`
+
+```{r}
+PoisGLM(N, X)
+```
+
+. . .
+
+Compare results with built-in GLM:
+
+```{r}
+glm(N ~ ., data=migraine, family="poisson") |>
+  coef()
+```
