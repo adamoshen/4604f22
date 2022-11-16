@@ -107,7 +107,7 @@ We calculate $\mathbf{Z}$, as recommended.
 
 ```{r}
 init <- function(response, design_matrix) {
-  Z <- log(N + 0.1)
+  Z <- log(response + 0.1)
   
   solve(t(design_matrix) %*% design_matrix) %*% t(design_matrix) %*% Z
 }
