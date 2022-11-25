@@ -1,6 +1,7 @@
 ---
 title: "Stat 4604: Lab 1"
 date: "October 5, 2022"
+date-format: long
 author: "Adam Shen"
 format:
   revealjs:
