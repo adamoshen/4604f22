@@ -724,7 +724,7 @@ sBMI         0.1487946</code></pre>
 <span id="cb21-10" class="hljs-ln-code"><a href="#cb21-10"></a>  }</span>
 <span id="cb21-11" class="hljs-ln-code"><a href="#cb21-11"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We initialize <span class="math inline">\mu_{i}</span> at this point to make the code for the calculation of the E-Step a bit cleaner.</p>
+<p>We initialize <span class="math inline">\mu_{i}</span> at this time to make the code for the calculation of the E-Step a bit cleaner.</p>
 </section>
 <section id="create-nbtau-4" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
 <h2 data-id="quarto-animate-title">Create <code>nbtau</code></h2>
@@ -894,6 +894,29 @@ sBMI         0.1487946</code></pre>
 </section>
 <section id="what-if-tau-is-not-a-fixed-value" class="slide level2">
 <h2>What if <span class="math inline">\tau</span> is not a fixed value?</h2>
+<p>So far, we have considered the cases where:</p>
+<ul>
+<li><p><span class="math inline">b_{i}</span>s are known</p></li>
+<li><p><span class="math inline">b_{i}</span>s are not known, but depend on <span class="math inline">\tau</span> which is a known fixed value</p></li>
+</ul>
+<p>Now, we consider the case where <span class="math inline">b_{i}</span>s are not known, and they depend on <span class="math inline">\tau</span> which is also unknown and not a fixed value.</p>
+<p>Task 3: Write a function called <code>nbreg</code> that will fit the model using an EM algorithm where <span class="math inline">\tau</span> is unknown and not fixed.</p>
+</section>
+<section id="create-nbreg" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Create <code>nbreg</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb37-1" class="hljs-ln-code"><a href="#cb37-1"></a>nbreg <span class="ot">&lt;-</span> <span class="cf">function</span>(response, design_matrix, <span class="at">tol=</span><span class="fl">1e-8</span>) {</span>
+<span id="cb37-2" class="hljs-ln-code"><a href="#cb37-2"></a>  </span>
+<span id="cb37-3" class="hljs-ln-code"><a href="#cb37-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-nbreg-1" class="slide level2" data-auto-animate="true," data-visibility="uncounted">
+<h2 data-id="quarto-animate-title">Create <code>nbreg</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb38-1" class="hljs-ln-code"><a href="#cb38-1"></a>nbreg <span class="ot">&lt;-</span> <span class="cf">function</span>(response, design_matrix, <span class="at">tol=</span><span class="fl">1e-8</span>) {</span>
+<span id="cb38-2" class="hljs-ln-code"><a href="#cb38-2"></a>  </span>
+<span id="cb38-3" class="hljs-ln-code"><a href="#cb38-3"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="footer footer-default">
 
 </div>

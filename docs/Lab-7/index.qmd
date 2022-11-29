@@ -359,7 +359,7 @@ nbtau <- function(response, design_matrix, tau, tol=1e-8) {
 }
 ```
 
-We initialize $\mu_{i}$ at this point to make the code for the calculation of the E-Step a bit
+We initialize $\mu_{i}$ at this time to make the code for the calculation of the E-Step a bit
 cleaner.
 
 ## Create `nbtau` {auto-animate=true, visibility=uncounted}
