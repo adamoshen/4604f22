@@ -1,0 +1,556 @@
+---
+title: "Stat 4604: Lab 7"
+date: "November 23, 2022"
+date-format: long
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Setup
+
+```{r}
+library(tibble)
+library(readr)
+
+migraine <- read_csv("./data/Pdata.csv")
+```
+
+<p></p>
+
+```{r}
+N <- as.matrix(migraine["N"])
+colnames(N) <- ""
+
+X <- cbind(
+  rep(1, nrow(migraine)),
+  as.matrix(migraine[c("Trt", "sBMI")])
+)
+colnames(X)[1] <- "(Intercept)"
+```
+
+## Model building via EM algorithm
+
+- In the last few labs, we considered the model:
+
+$$N_{i} \,\sim\, \text{Poisson}(\mu_{i}), \quad \mu_{i} \,=\,
+\exp{\lbrace\beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}\rbrace}.$$
+
+. . .
+
+- This time, we will consider the overdispersed model:
+
+$$N_{i} \,\sim\, \text{Poisson}(b_{i}\mu_{i}), \quad \mu_{i} \,=\,
+\exp{\lbrace\beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}\rbrace},$$
+
+where
+
+- $b_{i} \,\sim\, \text{Gamma}(\tau^{-1},\, \tau)$
+
+- It is assumed that the $N_{i}$s and $b_{i}$s are independent
+
+## Modify `PoisGLM` to accept an offset term
+
+Task 1: Modify the `PoisGLM` function from the previous lab to accept an offset term.
+
+Note that in doing this, we will also need to modify its helper functions, `init` and `gradH`.
+
+## Modify `PoisGLM` to accept an offset term
+
+Note that:
+
+\begin{align*}
+b_{i}\mu_{i} &= b_{i}\exp{\lbrace\beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}\rbrace}\\
+&= \exp{\lbrace\ln{(b_{i})}\rbrace}\exp{\lbrace\ln{\left(\exp{\lbrace\beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}\rbrace}\right)}\rbrace}\\
+&= \exp{\lbrace\ln{\left(b_{i}\right) \,+\, \beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}}\rbrace}
+\end{align*}
+
+. . .
+
+- In the last lab, all functions that calculated $\mu_{i}$ used
+$\exp{\lbrace\beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2}\rbrace}$
+
+- Therefore, to modify all functions that calculated $\mu_{i}$ to include an offset, we simply
+inject a $\ln{(b_{i})}$ inside the exponential
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true}
+
+We start by modifying `gradH`.
+
+```{r, eval=FALSE}
+gradH <- function(beta, response, design_matrix) {
+  mu <- exp(design_matrix %*% beta)
+
+  V <- mu |>
+    drop() |>
+    diag()
+
+  gradient <- t(design_matrix) %*% (response - mu)
+
+  hessian <- -t(design_matrix) %*% V %*% design_matrix
+
+  list(
+    gradient = gradient,
+    hessian = hessian
+  )
+}
+```
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true, visibility=uncounted}
+
+We start by modifying `gradH`.
+
+```{r}
+#| code-line-numbers: "|1-5"
+gradH <- function(beta, response, design_matrix, b=rep(1, nrow(response))) {
+  offset <- as.matrix(b) |>
+    log()
+  
+  mu <- exp(offset + design_matrix %*% beta)
+
+  V <- mu |>
+    drop() |>
+    diag()
+
+  gradient <- t(design_matrix) %*% (response - mu)
+
+  hessian <- -t(design_matrix) %*% V %*% design_matrix
+
+  list(
+    gradient = gradient,
+    hessian = hessian
+  )
+}
+```
+
+Assume that `b` is passed in as a vector. We will coerce it to a column matrix inside the function.
+By default, I will make it a vector of ones. As such, if `b` is not supplied, the results will be
+identical to those of the previous lab.
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true}
+
+Next, we need to modify `init`.
+
+```{r, eval=FALSE}
+init <- function(response, design_matrix) {
+  Z <- log(response + 0.1)
+
+  solve(t(design_matrix) %*% design_matrix) %*% t(design_matrix) %*% Z
+}
+```
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true, visibility=uncounted}
+
+Next, we need to modify `init`.
+
+```{r}
+#| code-line-numbers: "|1-4"
+init <- function(response, design_matrix, b=rep(1, nrow(response))) {
+  b <- as.matrix(b)
+
+  Z <- log((response / b) + 0.1)
+
+  solve(t(design_matrix) %*% design_matrix) %*% t(design_matrix) %*% Z
+}
+```
+
+Again, assume `b` is supplied as a vector, and coerce it to a column matrix inside the function. As
+before, set the default value of `b` to be a vector of ones -- if nothing is supplied, the results
+will be identical to those of the previous lab.
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true}
+
+Finally, we modify the core function, `PoisGLM`.
+
+```{r, eval=FALSE}
+PoisGLM <- function(response, design_matrix, tol=1e-8) {
+  beta <- init(response, design_matrix)
+
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix)
+
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+
+    beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
+  }
+
+  derivatives <- gradH(beta, response, design_matrix)
+
+  if (any(eigen(derivatives$hessian)$values > 0)) {
+    stop("Hessian is not negative semidefinite.")
+  }
+
+  list(
+    beta = beta,
+    fisher_score = -derivatives$hessian
+  )
+}
+```
+
+## Modify `PoisGLM` to accept an offset term {auto-animate=true, visibility=uncounted}
+
+Finally, we modify the core function, `PoisGLM`.
+
+```{r}
+#| code-line-numbers: "|1-2,5,14"
+PoisGLM <- function(response, design_matrix, b=rep(1, nrow(response)), tol=1e-8) {
+  beta <- init(response, design_matrix, b)
+
+  repeat {
+    derivatives <- gradH(beta, response, design_matrix, b)
+
+    if (norm(derivatives$gradient, type="2") < tol) {
+      break
+    }
+
+    beta <- beta - solve(derivatives$hessian) %*% derivatives$gradient
+  }
+
+  derivatives <- gradH(beta, response, design_matrix, b)
+
+  if (any(eigen(derivatives$hessian)$values > 0)) {
+    stop("Hessian is not negative semidefinite.")
+  }
+
+  list(
+    beta = beta,
+    fisher_score = -derivatives$hessian
+  )
+}
+```
+
+The main modification that we make is pass the value of `b` supplied to `PoisGLM` to its helper
+functions, `init` and `gradH`.
+
+## Test `PoisGLM`
+
+Reproducing the results from last time by not supplying anything to `b`.
+
+```{r}
+PoisGLM(N, X)$beta
+```
+
+<p></p>
+
+```{r}
+glm(N ~ ., data=migraine, family="poisson") |>
+  coef()
+```
+
+## Test `PoisGLM`
+
+Now let's trying supplying some values to `b`.
+
+```{r}
+set.seed(50)
+test_b <- runif(nrow(migraine))
+```
+
+<p></p>
+```{r}
+PoisGLM(N, X, test_b)$beta
+```
+
+<p></p>
+
+```{r}
+glm(N ~ ., data=migraine, family="poisson", offset=log(test_b)) |>
+  coef()
+```
+
+## What if the $b_{i}$s are not known in advance?
+
+Suppose that we do not know the values of $b_{i}$ in advance, but we do know $\tau$, where
+
+$$\textbf{E}(b_{i}\,|\,N_{i} = n_{i}) \,=\, \frac{1 + \tau n_{i}}{1 + \tau \mu_{i}}$$
+
+. . .
+
+Task 2: Write a function called `nbtau` that will fit the model using an EM algorithm for a fixed
+value of $\tau$.
+
+## Create `nbtau` {auto-animate=true}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  
+}
+```
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+}
+```
+
+Assuming that $\tau$ is a fixed known value, we can generate our initial estimates of $b_{i}$. We
+need to do this first because we need values for $b_{i}$ in order to obtain our initial estimates of
+$\beta$.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+}
+```
+
+Finally, we initialize $\beta$.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+  }
+}
+```
+
+We initialize $\mu_{i}$ at this point to make the code for the calculation of the E-Step a bit
+cleaner.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+    
+    b <- (1 + tau * response) / (1 + tau * mu)
+  }
+}
+```
+
+E-Step:
+
+$$b_{i,\,\text{new}} \,=\, \textbf{E}(b_{i}\,|\,N_{i}=n_{i}) \,=\,
+\frac{1 + \tau n_{i}}{1 + \tau \mu_{i}}$$
+
+
+Note that we are using `*` rather than `%*%` since `tau` is a single-value scalar.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+    
+    b <- (1 + tau * response) / (1 + tau * mu)
+    
+    new_beta <- init(response, design_matrix, b)
+  }
+}
+```
+
+M-Step:
+
+Perform a Poisson log linear regression to get new $\beta$s. Note that we can reuse our `init`
+function to do this calculation.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+    
+    b <- (1 + tau * response) / (1 + tau * mu)
+    
+    new_beta <- init(response, design_matrix, b)
+    
+    if (norm(new_beta - old_beta, type="2") < tol) {
+      break
+    }
+  }
+}
+```
+
+We now add an exit condition. We want to exit when
+
+$$\lVert\beta_{\text{new}} - \beta_{\text{old}}\rVert_{2} \,<\, \varepsilon.$$
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+    
+    b <- (1 + tau * response) / (1 + tau * mu)
+    
+    new_beta <- init(response, design_matrix, b)
+    
+    if (norm(new_beta - old_beta, type="2") < tol) {
+      break
+    }
+    
+    old_beta <- new_beta
+  }
+}
+```
+
+However, if we are not exiting, we should overwrite `old_beta` to the value of `new_beta`.
+
+## Create `nbtau` {auto-animate=true, visibility=uncounted}
+
+```{r}
+nbtau <- function(response, design_matrix, tau, tol=1e-8) {
+  b <- rgamma(1, shape=1/tau, scale=tau) |>
+    rep(nrow(response))
+  old_beta <- init(response, design_matrix, b)
+  
+  repeat {
+    offset <- as.matrix(b) |>
+      log()
+    mu <- exp(offset + design_matrix %*% old_beta)
+    
+    b <- (1 + tau * response) / (1 + tau * mu)
+    
+    new_beta <- init(response, design_matrix, b)
+    
+    if (norm(new_beta - old_beta, type="2") < tol) {
+      break
+    }
+    
+    old_beta <- new_beta
+  }
+  
+  drop(new_beta)
+}
+```
+
+Once we have successfuly exited the loop, we should return the values of the $\beta$s. I will return
+it as a vector rather than a matrix since they print a bit nicer.
+
+## Test `nbtau`
+
+```{r}
+nbtau(N, X, tau=2)
+```
+
+<p></p>
+
+```{r}
+nbtau(N, X, tau=3.2)
+```
+
+## Test `nbtau`
+
+Although there is some randomness in the initialization of the algorithm, we don't really need to
+set a seed because the results should converge to the same result. We can verify this by repeatedly
+calling `nbtau`.
+
+```{r}
+nbtau(N, X, tau=2)
+nbtau(N, X, tau=2)
+nbtau(N, X, tau=2)
+```
+
+## What if $\tau$ is not a fixed value?
+
+So far, we have considered the cases where:
+
+- $b_{i}$s are known
+
+- $b_{i}$s are not known, but depend on $\tau$ which is a known fixed value
+
+Now, we consider the case where $b_{i}$s are not known, and they depend on $\tau$ which is also
+unknown and not a fixed value.
+
+Task 3: Write a function called `nbreg` that will fit the model using an EM algorithm where $\tau$
+is unknown and not fixed.
+
+## Create `nbreg` {auto-animate=true}
+
+```{r, eval=FALSE}
+nbreg <- function(response, design_matrix, tol=1e-8) {
+  
+}
+```
+
+## Create `nbreg` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+nbreg <- function(response, design_matrix, tol=1e-8) {
+  
+}
+```
+
