@@ -1,0 +1,541 @@
+---
+title: "Stat 4604: Lab 8"
+date: "November 30, 2022"
+date-format: long
+author: "Adam Shen"
+format:
+  revealjs:
+    theme: [dark, "../slides.scss"]
+    overview: true
+    progress: true
+    history: false
+    touch: true
+    keyboard: true
+    controls: true
+    controls-back-arrows: visible
+    controls-layout: edges
+    help: true
+    highlight-style: "../adam_one_light.theme"
+    from: markdown-smart
+    html-math-method: katex
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE, fig.align="center", dev="svglite"
+)
+
+old_hooks <- fansi::set_knit_hooks(
+  knitr::knit_hooks,
+  which = c("output", "message", "warning", "error")
+)
+
+options(crayon.enabled=TRUE)
+```
+
+## Slide navigation
+
+- Type `?` to bring up the presentation menu
+
+- Press `o` for the presentation overview (and jump to a specific slide)
+
+- To export slides to PDF, press `e` to activate PDF export mode, then print to PDF (note that some
+features may not function properly when exported to a PDF)
+
+- To copy a code block, hover over the top-right corner of the code block and click the clipboard
+icon
+
+## Expectation by simulation
+
+Suppose we are interested in the quantity $\textbf{E}(m(X))$, where
+
+$$m(X) \,=\, 5e^{-3(X-4)^{4}}$$
+
+and $X \,\sim\, t_{7}$.
+
+We want to estimate this quantity through simulation.
+
+Task: Using various sample sizes from small to large, sample from the $t_{7}$ distribution and
+calculate the mean and variance of the $m(x)$ values.
+
+## Define `m`
+
+We start by defining a function for $m(X)$.
+
+```{r}
+m <- function(x) {
+  5 * exp(-3 * (x - 4)^4)
+}
+```
+
+. . .
+
+Note that this function is vectorized since mathematical operations are vectorized. In other words,
+we can pass in more than one value and the function will operate on the values element-wise. For
+example:
+
+```{r}
+m(c(2, 4, 0, 7))
+```
+
+## Create the function `m_t`
+
+I will now create a function that I will call `m_t`. This function will:
+
+- Generate a sample from the $t$ distribution
+
+- Evaluate $m(x)$ over each value of $x$ generated
+
+- Return a vector containing the mean and variance of the $m(x)$ values
+
+## Create the function `m_t` {auto-animate=true}
+
+```{r, eval=FALSE}
+m_t <- function(sample_size, df, func) {
+  
+}
+```
+
+- `sample_size`: the sample size that we generate from the $t$ distribution. This is passed to the
+`rt` function which the function that generates deviates from the $t$ distribution.
+
+- `df`: the degrees of freedom for the desired $t$ distribution. This is also passed to `rt`.
+
+- `func`: the function that we wish to evaluate on our sample values. I have included this to keep
+it general, i.e. I don't want to hard code $m(X)$ in case we decide to change the definition of
+$m(X)$ in the future.
+
+## Create the function `m_t` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+m_t <- function(sample_size, df, func) {
+  m_values <- rt(sample_size, df=df) |>
+    func()
+}
+```
+
+We generate our sample from the t-distribution and then pass it to the supplied function. We store
+the values in a local variable called `m_values`.
+
+## Create the function `m_t` {auto-animate=true, visibility=uncounted}
+
+```{r}
+m_t <- function(sample_size, df, func) {
+  m_values <- rt(sample_size, df=df) |>
+    func()
+  
+  c("Mean" = mean(m_values), "Variance" = var(m_values))
+}
+```
+
+We return a named vector, constructed by supplying name-value pairs.
+
+## Test `m_t`
+
+```{r}
+set.seed(20)
+m_t(sample_size=10, df=7, func=m)
+```
+
+## Vary the sample size and repeat a few times
+
+We wish to vary the sample size and for each value of the sample size, repeat the procedure a few
+times to get a feel for these means and variances.
+
+. . .
+
+We can do this using the `replicate` function. The `replicate` function calls an expression a
+specific number of times. This is a cleaner alternative to using a `for` loop.
+
+## Vary the sample size and repeat a few times
+
+Sample size: 10
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=10, df=7, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 50
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=50, df=7, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 100
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=100, df=7, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 1000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=1000, df=7, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 5000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=5000, df=7, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 10000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=10000, df=7, func=m))
+```
+
+## Approximate the variation of the sample means
+
+Now, we wish to approximate, by simulation, the variation in the means of the $m(x)$ values for
+different sample sizes. This is similar to what we have been doing on the past few slides, but we
+will do it more than five times.
+
+We will store our results in matrices with dimension $B \times S$, where
+
+- $B$ is the number of repetitions
+
+- $S$ is the sample size
+
+## Approximate the variation of the sample means
+
+From these matrices, we can compute the mean of each sample of $m(x)$ values (the row means), and
+then compute the variance of these $B$ means.
+
+This means we will got from a $B \times S$ matrix to a vector of length $B$ to a vector of length
+one.
+
+```{r}
+B <- 2000
+```
+
+## Variation of sample means {auto-animate=true}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+```
+
+We first initialize our vector sample sizes and the vector that will store our results.
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+
+}
+```
+
+We will use a `for` loop since this will run a fixed number of times.
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7)
+}
+```
+
+We first generate $B \times S$ values from the $t_{7}$ distribution. We can actually batch generate
+all of the sample values at once rather than generating sample by sample.
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7) |>
+    m()
+}
+```
+
+We pass these deviates from the $t_{7}$ distribution to the `m` function to evaluate $m(x)$. Once
+again, `m` is a vectorized function, and as such, will apply `m` to each element in the sample
+(which is what we want).
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7) |>
+    m() |>
+    matrix(nrow=B, ncol=S[i])
+}
+```
+
+These $m(x)$ values are then passed to `matrix` with rows equal to the number of samples, $B$,
+and columns equal to the number of elements in a single sample, $S$.
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7) |>
+    m() |>
+    matrix(nrow=B, ncol=S[i]) |>
+    apply(MARGIN=1, FUN=mean)
+}
+```
+
+The matrix is then passed to the `apply` function. The `apply` function applies a function to the
+rows of a matrix (`MARGIN = 1`), or the columns of a matrix (`MARGIN = 2`). Here, we want the row
+means, so we specify `MARGIN = 1` and `FUN = mean`.
+
+## Variation of sample means {auto-animate=true, visibility=uncounted}
+
+```{r, cache=TRUE}
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7) |>
+    m() |>
+    matrix(nrow=B, ncol=S[i]) |>
+    apply(MARGIN=1, FUN=mean) |>
+    var()
+}
+```
+
+Finally, these means are passed to the variance function to calculate the variance of these means.
+
+## Visualize results
+
+```{r}
+plot(results ~ S, type="b", col="darkred", xlab="Sample size", ylab="Variance of means")
+text(x=S, y=results, labels=as.character(S), adj=c(0.5, 0))
+```
+
+The variance of the means seems to begin to stabilize around $S = 1000$.
+
+## Importance sampling
+
+Now, suppose that instead of the $t_{7}$ distribution, the data came from a $N(4,1)$ distribution.
+We can use importance sampling to estimate $\textbf{E}(m(X))$ using:
+
+$$\frac{1}{S}\sum_{s=1}^{S}\frac{f(X_{s})}{h(X_{s})} \cdot m(X_{s}),$$
+
+where
+
+- $f(\cdot)$ is the density of the $t_{7}$ distribution
+
+- $h(\dot)$ is the density of the $N(4,1)$ distribution
+
+- $m(\dot)$ is the function defined in the question
+
+## Create `m_norm` {auto-animate=true}
+
+```{r, eval=FALSE}
+m_norm <- function(sample_size, df, mean, sd, func) {
+  
+}
+```
+
+This time, we accept additional arguments `mean` and `sd` which will be passed to `dnorm`.
+
+## Create `m_norm` {auto-animate=true, visibility=uncounted}
+
+```{r, eval=FALSE}
+m_norm <- function(sample_size, df, mean, sd, func) {
+  t_values <- rt(sample_size, df=df)
+}
+```
+
+First, we generate our values from the $t$ distribution.
+
+## Create `m_norm` {auto-animate=true, visibility=uncounted}
+
+```{r}
+m_norm <- function(sample_size, df, mean, sd, func) {
+  t_values <- rt(sample_size, df=df)
+  
+  (1 / sample_size) * sum(dt(t_values, df=df) / dnorm(t_values, mean=mean, sd=sd) * func(t_values))
+}
+```
+
+Next, we apply the formula given earlier.
+
+## Vary the sample size and repeat a few times
+
+Sample size: 10
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=10, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=10, df=7, mean=4, sd=1, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 50
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=50, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=50, df=7, mean=4, sd=1, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 100
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=100, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=100, df=7, mean=4, sd=1, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 1000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=1000, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=1000, df=7, mean=4, sd=1, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 5000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=5000, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=5000, df=7, mean=4, sd=1, func=m))
+```
+
+## Vary the sample size and repeat a few times
+
+Sample size: 10000
+
+```{r}
+set.seed(20)
+replicate(n=5, m_t(sample_size=10000, df=7, func=m))
+
+set.seed(20)
+replicate(n=5, m_norm(sample_size=10000, df=7, mean=4, sd=1, func=m))
+```
+
+## Variation of sample means
+
+```{r, eval=FALSE}
+#| code-line-numbers: "|10"
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results[i] <- rt(B * S[i], df=7) |>
+    m() |>
+    matrix(nrow=B, ncol=S[i]) |>
+    apply(MARGIN=1, FUN=mean) |>
+    var()
+}
+```
+
+We proceed with an approach that is nearly identical to the previous when we only used the $t_{7}$
+distribution, only that we need to swap out the ordinary mean function for a custom function that
+uses the proper weights.
+
+## Custom mean function
+
+```{r}
+custom_mean <- function(x, df, mean, sd, func) {
+  (1 / length(x)) * sum(dt(x, df=df) / dnorm(x, mean=mean, sd=sd) * func(x))
+}
+```
+
+## Variation of sample means
+
+```{r}
+#| code-line-numbers: "|2|7|10"
+S <- c(10, 50, 100, 1000, 5000, 10000)
+results2 <- rep(NA_real_, length(S))
+
+set.seed(20)
+
+for (i in 1:length(S)) {
+  results2[i] <- rt(B * S[i], df=7) |>
+    m() |>
+    matrix(nrow=B, ncol=S[i]) |>
+    apply(MARGIN=1, FUN=custom_mean, df=7, mean=4, sd=1, func=m) |>
+    var()
+}
+```
+
+Create the new variable `results2` to store our results and compare them with our earlier results
+in the variable `results`.
+
+## Visualize results
+
+```{r}
+plot(results ~ S, type="b", col="darkred", xlab="Sample size", ylab="Variance of means")
+text(x=S, y=results, labels=as.character(S), adj=c(0.5, 0))
+points(results2 ~ S, type="b", col="royalblue")
+```
+
+## View results
+
+```{r}
+results # Using t distribution only
+results2 # Using t and normal distribution via importance sampling
+```
+
+We can see that the variability of the means is much smaller in the importance sampling case, even
+for extremely small sample sizes. As such, this does improve the performance of the approximation.
