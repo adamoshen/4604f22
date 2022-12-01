@@ -603,11 +603,15 @@ Variance 0.11893496 0.09563148 0.13793839 0.08514177 0.10923151</code></pre>
 <section id="approximate-the-variation-of-the-sample-means-1" class="slide level2">
 <h2>Approximate the variation of the sample means</h2>
 <p>From these matrices, we can compute the mean of each sample of <span class="math inline">m(x)</span> values (the row means), and then compute the variance of these <span class="math inline">B</span> means.</p>
-<p>This means we will got from a <span class="math inline">B \times S</span> matrix to a vector of length <span class="math inline">B</span> to a vector of length one.</p>
+<p>This means we will go from a <span class="math inline">B \times S</span> matrix to a vector of length <span class="math inline">B</span> to a vector of length one.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>B <span class="ot">&lt;-</span> <span class="dv">2000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="approximate-the-variation-of-the-sample-means-2" class="slide level2">
+<h2>Approximate the variation of the sample means</h2>
+
+<img data-src="diagram.svg" class="r-stretch"></section>
 <section id="variation-of-sample-means" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Variation of sample means</h2>
 <div class="cell" data-layout-align="center">
@@ -728,8 +732,8 @@ Variance 0.11893496 0.09563148 0.13793839 0.08514177 0.10923151</code></pre>
 <p>where</p>
 <ul>
 <li><p><span class="math inline">f(\cdot)</span> is the density of the <span class="math inline">t_{7}</span> distribution</p></li>
-<li><p><span class="math inline">h(\dot)</span> is the density of the <span class="math inline">N(4,1)</span> distribution</p></li>
-<li><p><span class="math inline">m(\dot)</span> is the function defined in the question</p></li>
+<li><p><span class="math inline">h(\cdot)</span> is the density of the <span class="math inline">N(4,1)</span> distribution</p></li>
+<li><p><span class="math inline">m(\cdot)</span> is the function defined in the question</p></li>
 </ul>
 </section>
 <section id="create-m_norm" class="slide level2" data-auto-animate="true">

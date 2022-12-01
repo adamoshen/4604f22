@@ -219,12 +219,16 @@ We will store our results in matrices with dimension $B \times S$, where
 From these matrices, we can compute the mean of each sample of $m(x)$ values (the row means), and
 then compute the variance of these $B$ means.
 
-This means we will got from a $B \times S$ matrix to a vector of length $B$ to a vector of length
+This means we will go from a $B \times S$ matrix to a vector of length $B$ to a vector of length
 one.
 
 ```{r}
 B <- 2000
 ```
+
+## Approximate the variation of the sample means
+
+![](diagram.svg)
 
 ## Variation of sample means {auto-animate=true}
 
@@ -363,9 +367,9 @@ where
 
 - $f(\cdot)$ is the density of the $t_{7}$ distribution
 
-- $h(\dot)$ is the density of the $N(4,1)$ distribution
+- $h(\cdot)$ is the density of the $N(4,1)$ distribution
 
-- $m(\dot)$ is the function defined in the question
+- $m(\cdot)$ is the function defined in the question
 
 ## Create `m_norm` {auto-animate=true}
 
