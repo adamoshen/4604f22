@@ -16,12 +16,6 @@ output:
 
 ## Statistical Computing, Fall 2022
 
-***
-
-MTC Hours: Wednesdays 2pm to 4pm
-
-***
-
 [Lab 1, October 5](./Lab-1/)
 
 [Lab 2, October 12](./Lab-2/)
